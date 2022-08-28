@@ -4,12 +4,16 @@ import { FindOneOptions } from "typeorm";
 import { UserDto } from "./dto/user.dto";
 import { UserRepository } from "./repository/user.repository";
 import * as bcrypt from 'bcrypt';
-import { User } from "./entity/user.entity";
+import { User } from "src/domain/user.entity";
+import { TrainService } from "src/train/train.service";
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {  }
+    constructor(
+        private trainService : TrainService,
+        @InjectRepository(UserRepository) private userRepository: UserRepository,
+    ) {  }
 
     async findByFields(options : FindOneOptions) : Promise<User | undefined> {
         return await this.userRepository.findOne(options);
@@ -28,4 +32,14 @@ export class UserService {
         );
         return Promise.resolve();
     }
+
+    // async deleteUser(userId : number) {
+    //     const {myProfiles} = await this.userRepository.findOne(userId, {relations : ['myProfiles']});
+    //     myProfiles.forEach(async (myProfile) => {
+    //         this.trainService.deleteTrainProfile(userId, myProfile.trainId);
+    //     })
+    //     await this.userRepository.delete({
+    //         id:userId
+    //     });
+    // }
 }

@@ -3,8 +3,8 @@ import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { Payload } from './security/payload.interface';
-import { User } from './entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/domain/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,16 +13,25 @@ export class AuthService {
         private jwtService : JwtService,
     ) {}
 
-    async registerUser(newUser : UserDto) : Promise<UserDto> {
+    async registerUser(newUser : UserDto) {
         let userFind: UserDto = await this.userService.findByFields({where : {username : newUser.username }})
         if(userFind) {
             throw new HttpException('UserName Aleady Used!', HttpStatus.BAD_REQUEST)
         }
-        return await this.userService.save(newUser);
+        try {
+            await this.userService.save(newUser);
+            return {
+                success : true
+            }
+        } catch(e) {
+            return {
+                success : false,
+                error : e
+            }
+        }
     }
 
-    async validateUser(userDto : UserDto) : Promise<{accessToken : string} | undefined> {
-
+    async validateUser(userDto : UserDto) : Promise<any | undefined> {
         let userFind : User = await this.userService.findByFields({
             where: {username : userDto.username}
         });
@@ -33,11 +42,7 @@ export class AuthService {
             throw new UnauthorizedException();
         }
 
-        console.log(userFind);
-
         this.convertInAuthorities(userFind);
-
-        console.log(userFind);
 
         const payload : Payload = {
             id : userFind.id,
@@ -47,6 +52,7 @@ export class AuthService {
 
         return {
             accessToken : this.jwtService.sign(payload),
+            user : userFind
         };
     }
 
