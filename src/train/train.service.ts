@@ -24,13 +24,14 @@ export class TrainService {
         return train;
     }
 
-    async joinTrain(userId : number, trainId:number, joinTrainDto:JoinTrainDto, role: RoleFormat)
+    async joinTrain(userId : number, trainId:number, {joinKey, nickName}:JoinTrainDto, role: RoleFormat)
     {
-        const isTrue = await this.trainRepository.checkJoinKey(trainId, joinTrainDto.joinKey);
+        const isTrue : boolean = await this.trainRepository.checkTrainJoinKey(trainId, joinKey);
         if(!isTrue) {
             throw new HttpException('입장하려는 기차의 인증코드가 올바르지 않습니다', HttpStatus.BAD_REQUEST);
         }
-        const profile = await this.trainProfileRepository.createTrainProfile(userId, trainId, joinTrainDto.nickName, role);
+
+        const profile = await this.trainProfileRepository.createTrainProfile(userId, trainId, nickName, role);
         await this.updateMemberCount(trainId);
         return profile;
     }

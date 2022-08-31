@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
 import { BibleTrack } from "src/domain/bible-track.entity";
-import {  AbstractRepository, EntityRepository, Repository } from "typeorm";
+import { CheckStamp } from "src/domain/check-stamp.entity";
+import {  AbstractRepository, Connection, EntityRepository, getRepository, Repository } from "typeorm";
 import { AddBibleTrackDto } from "../dto/AddBibleTrack.dto";
 
 @EntityRepository(BibleTrack)
@@ -26,21 +27,18 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
         return bibleTrack;
     }
 
-
-    //메서드명을 예쁘게 바꾸기
-    //query 메서드로 정리하기
     async findOneTrack(trainId:number, trackDate:Date, userId:number) {
         const track = await this.query(`
         SELECT 
         tot.*, 
         st_b.chapter as start_chapter_name,
         ed_b.chapter as end_chapter_name
-         FROM (select track.train_id, track.date, track.start_chapter, track.end_chapter, track.start_page, track.end_page, stamp.status from 
+        FROM (select track.train_id, track.date, track.start_chapter, track.end_chapter, track.start_page, track.end_page, stamp.status from 
         (select * from bible_track where train_id = ? AND date = ?) as track
-        left join (select * from check_stamp where train_id = ? AND track_date = ? AND user_id = ?) as stamp on
-        track.train_id = stamp.train_id AND track.date = stamp.track_date) as tot 
-        left join bible as st_b on tot.start_chapter = st_b.id
-        left join bible as ed_b on tot.end_chapter = ed_b.id;
+            left join (select * from check_stamp where train_id = ? AND track_date = ? AND user_id = ?) as stamp on
+            track.train_id = stamp.train_id AND track.date = stamp.track_date) as tot 
+            left join bible as st_b on tot.start_chapter = st_b.id
+            left join bible as ed_b on tot.end_chapter = ed_b.id;
         `, [trainId, trackDate,trainId, trackDate, userId])
         if(!track) {
             throw new NotFoundException("특정 bible-track을 찾을 수 없습니다");
@@ -58,8 +56,30 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
             (select status, track_date from check_stamp where user_id = ? AND train_id = ?) as cs 
             on t.date = cs.track_date order by date desc LIMIT ${pageSize*(page-1)}, ${(pageSize*(page-1))+pageSize}) as tot LEFT JOIN bible as st_b ON tot.start_chapter = st_b.id LEFT JOIN bible as ed_b ON tot.end_chapter = ed_b.id;
         `, [trainId, userId, trainId]);
+        list.forEach(track => {
+            track.status = track.status ?  track.status:"UNCOMPLETE" 
+        });
         return list;
     }
+
+    async testMet(user_id:number, train_id:number) {
+        const stampQb = await getRepository(CheckStamp).createQueryBuilder("check_stamp").select().where(`user_id = ${user_id} AND train_id =${train_id}`).getQuery();
+        console.log(`(${stampQb}) as cs`);
+    }
+
+    // async findAllTracks(trainId:number, userId:number, page : number, pageSize: number = 1) {
+    //     const list = await this.query(`
+    //     select bt.date, bt.start_chapter, bt.end_chapter, bt.start_page, bt.end_page, cs.status, b1.chapter as st, b2.chapter as ed from 
+    //     bible_track as bt
+    //     left outer join (select * from check_stamp where user_id = ${userId} AND train_id = ${trainId}) as cs 
+    //     ON bt.train_id = cs.train_id AND bt.date = cs.track_date
+    //     left outer join bible as b1 on b1.id = bt.start_chapter
+    //     left outer join bible as b2 on b2.id = bt.end_chapter
+    //     order by bt.date desc
+    //     LIMIT ${pageSize*(page-1)}, ${(pageSize*(page-1))+pageSize};
+    //     `);
+    //     return list;
+    // }
 
     async findTracks( trainId:number, startDate: Date, endDate:Date) {
         return await this.query(`

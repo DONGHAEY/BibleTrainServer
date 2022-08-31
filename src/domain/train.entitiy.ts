@@ -22,9 +22,8 @@ export class Train {
     })
     trainName : string
 
-    @Column('int', { name : 'member_count'})
+    @Column('int', { name : 'member_count', default:0, nullable:true})
     memberCount : number;
-
 
     @OneToMany(type => TrainProfile, trainProfile => trainProfile.trainId)
     members? : any[];
@@ -34,7 +33,8 @@ export class Train {
         default:'',
         // nullable:false,
     })
-    joinKey : string
+    joinKey : string;
+
 
 
     // @Column('enum', {

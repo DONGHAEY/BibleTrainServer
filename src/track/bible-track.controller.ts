@@ -14,8 +14,9 @@ import { AddBibleTrackDto } from './dto/AddBibleTrack.dto';
 export class BibleTrackController {
     constructor(
         private bibleTrackService : BibleTrackService
-    ) {}
+    ) {
 
+    }
 
     //일반 사용자 UI용
     @Get('/:trainId')
@@ -35,7 +36,7 @@ export class BibleTrackController {
     async showTrackListWithTerm(
         @Param('trainId') trainId: number, 
         @Query('startDate') startDate:Date,
-        @Query('endDate') endDate : Date 
+        @Query('endDate') endDate : Date
     ) : Promise<any> {
         return await this.bibleTrackService.getTracks(trainId, startDate, endDate);
     }
@@ -56,7 +57,7 @@ export class BibleTrackController {
     @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW, RoleFormat.VIEWER)
     async showTrack(
         @GetUser() user : User, 
-        @Param('trainId') trainId : number, 
+        @Param('trainId') trainId : number,
         @Param('trackDate') trackDate : Date
     ) {
         return await this.bibleTrackService.getTrack(trainId, trackDate, user.id);
@@ -67,10 +68,21 @@ export class BibleTrackController {
     async completeTrack(
         @GetUser() user : User,
         @Param('trainId') trainId: number,
-        @Param('trackDate') trackDate:Date
+        @Param('trackDate') trackDate:string
     ) : Promise<void> 
     {
         await this.bibleTrackService.completeTrack(trainId, trackDate, user.id);
+    }
+
+    @Post('/:trainId/:trackDate/cancelStamp')
+    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
+    async deleteStamp(
+        @GetUser() user : User,
+        @Param('trainId') trainId: number,
+        @Param('trackDate') trackDate:string,
+    ) : Promise<void> 
+    {
+        await this.bibleTrackService.cancelStamp(trainId, trackDate, user.id);
     }
 
     //특정 날에 train 내 사용자들의 스탬프 리스트를 불러온다.
@@ -88,14 +100,14 @@ export class BibleTrackController {
 
     //특정 날에 train 내 사용자들의 스탬프 리스트를 불러온다.
     //날짜로해서 받을 수 있도록 메서드로 재 정의한다.
-    @Delete('/:trainId/:trackDate/delete')
+
+    @Post('/:trainId/test')
     @TrainRoles(RoleFormat.CAPTAIN)
-    async deleteTrack(
+    async testM(
         @GetUser() user: User,
         @Param('trainId') trainId: number,
-        @Param('trackDate') trackDate:Date
     ) : Promise<any>
     {
-        await this.bibleTrackService.deleteTrack(trainId, trackDate);
+        await this.bibleTrackService.testMet(trainId, user.id);
     }
 }

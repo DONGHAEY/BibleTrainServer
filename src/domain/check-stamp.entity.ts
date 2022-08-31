@@ -10,15 +10,18 @@ export enum STAMPSTAT {
 export class CheckStamp {
 
     @PrimaryColumn({
-        name:'user_id'
+        name:'user_id',
+        type:'int'
     })
     userId : number;
     @PrimaryColumn({
-        name:'train_id'
+        name:'train_id',
+        type:'int',
     })
     trainId : number;
     @PrimaryColumn({
-        name:'track_date'
+        name:'track_date',
+        type: 'date'
     })
     trackDate : Date;
 

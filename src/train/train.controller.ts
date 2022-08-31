@@ -53,7 +53,7 @@ export class TrainController {
     @Post('/trainProfiles')
     async myProfiles(
         @GetUser() user : User
-    ) : Promise<TrainProfile[]> 
+    ) : Promise<TrainProfile[]>
     {
         return await this.trainService.getTrainProfiles(user.id);
     }

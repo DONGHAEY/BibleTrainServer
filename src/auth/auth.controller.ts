@@ -7,8 +7,6 @@ import { AuthGuard } from './security/auth.guard';
 import { RolesGuard } from './security/roles.guard';
 import { Roles } from './decorator/role.decorator';
 import { RoleType } from './role-type';
-import { GetUser } from './decorator/userinfo.decorator';
-import { User } from 'src/domain/user.entity';
 import { UserService } from './user.service';
 
 @Controller('/auth')
@@ -48,7 +46,7 @@ export class AuthController {
             maxAge: 0
         })
         return res.send({
-            message: 'success',
+            success: true,
         });
     }
     
@@ -56,8 +54,10 @@ export class AuthController {
     @UseGuards(AuthGuard)
     isAuthenticated(@Req() req: Request): any { 
         const user: any = req.user;
-        console.log(user);
-        return user;
+        return {
+            user,
+            success : true
+        };
     }
 
     @Get('/admin-role')

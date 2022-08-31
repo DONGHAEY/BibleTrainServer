@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
+import { ConflictException, HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
+import { randomBytes } from 'crypto';
 import { TrainProfile } from "src/domain/train-profile.entity";
 import { Train } from "src/domain/train.entitiy";
 import {  EntityRepository, Repository} from "typeorm";
@@ -6,11 +7,13 @@ import {  EntityRepository, Repository} from "typeorm";
 @EntityRepository(Train)
 export class TrainRepository extends Repository<Train> {
     async createTrain(trainName : string, userId : number) : Promise<Train> {
-        const isSameName = await this.findOne( { where : { trainName : trainName } } );
+        const isSameName = await this.findOne( { where : { trainName } } );
         if(isSameName) {
-            throw new HttpException('똑같은 열차 이름이 존재합니다.', HttpStatus.BAD_REQUEST)
+            throw new ConflictException('똑같은 열차 이름이 존재합니다.');
+            // throw new HttpException(, HttpStatus.BAD_REQUEST)
         }
-        const joinKey = await this.KeyAlgorithm();
+        
+        const joinKey = randomBytes(4).toString('hex');
         while(true) {
             const isSameKey = await this.findOneByJoinKey(joinKey);
             if(!isSameKey) {
@@ -25,9 +28,11 @@ export class TrainRepository extends Repository<Train> {
         return train;
     }
 
-    async checkJoinKey(trainId:number, joinKey:string) : Promise<boolean> {
+    async checkTrainJoinKey(trainId:number, jokey:string) : Promise<boolean> {
+        console.log(jokey);
         const trainInfo : Train = await this.getTrainById(trainId);
-        if(trainInfo.joinKey !== joinKey) {
+        console.log(trainInfo, jokey)
+        if(trainInfo.joinKey !== jokey) {
             return false;
         }
         return true;
@@ -35,7 +40,6 @@ export class TrainRepository extends Repository<Train> {
 
     async getTrainById( trainId : number ) : Promise<Train> {
         const trainInfo : Train = await this.findOne(trainId);
-        delete trainInfo.joinKey;
         if (!trainInfo) {
             throw new NotFoundException(`#${trainId}번 기차는 존재하지 않습니다`);
         }
@@ -49,15 +53,4 @@ export class TrainRepository extends Repository<Train> {
         })
         return trainInfo;
     }
-
-    private async KeyAlgorithm() : Promise<string> {
-        let key = ""
-        let alp = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','S','Y','Z'];
-        for(let i=0; i<4; i++) {
-            const rand_0_26 = Math.floor(Math.random() * 26);
-            key += alp[rand_0_26];
-        };
-        return key;
-    }
-
 }

@@ -5,7 +5,7 @@ import { EntityRepository, Repository } from "typeorm";
 @EntityRepository(CheckStamp)
 export class CheckStampRepository extends Repository<CheckStamp> { 
 
-    async completeTrack(trainId:number, trackDate: Date, userId:number) : Promise<any> {
+    async completeTrack(trainId:number, trackDate: string, userId:number) : Promise<any> {
         await this.checkExistTrack(trainId, trackDate, userId);
         await this.save({
             trackDate,
@@ -21,7 +21,7 @@ export class CheckStampRepository extends Repository<CheckStamp> {
         `, [trainId, trackDate])
     }
 
-    private async checkExistTrack(trainId:number, trackDate: Date, userId:number) {
+    private async checkExistTrack(trainId:number, trackDate: string, userId:number) {
         const checkStamp : CheckStamp = await this.findOneByPk(trainId, trackDate, userId);
         if(checkStamp) {
             throw new HttpException("이미 똑같은 pk값을 가진 스탬프가 존재합니다", HttpStatus.FOUND);
@@ -29,7 +29,7 @@ export class CheckStampRepository extends Repository<CheckStamp> {
         return checkStamp;
     }
 
-    async findOneByPk(trainId:number, trackDate: Date, userId:number) {
+    async findOneByPk(trainId:number, trackDate: string, userId:number) {
         return await this.findOne({trainId, trackDate, userId});
     }
 }

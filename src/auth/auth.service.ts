@@ -32,6 +32,7 @@ export class AuthService {
     }
 
     async validateUser(userDto : UserDto) : Promise<any | undefined> {
+        
         let userFind : User = await this.userService.findByFields({
             where: {username : userDto.username}
         });

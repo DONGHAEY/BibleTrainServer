@@ -16,8 +16,12 @@ export class BibleTrackService {
         await this.bibleTrackRepository.createTrack(trainId, addBibleTrackDto);
     }
 
-    async completeTrack(trainId:number, trackDate: Date, userId:number) : Promise<any> {
-        await this.checkStampRepository.completeTrack(userId,trackDate,trainId)
+    async completeTrack(trainId:number, trackDate: string, userId:number) : Promise<any> {
+        await this.checkStampRepository.completeTrack(trainId,trackDate,userId);
+    }
+
+    async cancelStamp(trainId:number, trackDate: string, userId:number) : Promise<any> {
+        await this.checkStampRepository.delete({trainId,trackDate,userId});
     }
 
     async showStampList(trainId:number, trackDate : Date) {
@@ -28,15 +32,15 @@ export class BibleTrackService {
         return await this.bibleTrackRepository.findOneTrack(trainId, date, userId);
     }
 
-    async deleteTrack(trainId:number, trackDate : Date) {
-        return await this.checkStampRepository.delete({trainId, trackDate});
-    }
-
     async getTrackList(trainId:number, userId:number, page:number, pageSize:number): Promise<any> {
         return await this.bibleTrackRepository.findAllTracks(trainId,userId, page, pageSize);
     }
 
     async getTracks(trainId: number, startDate: Date, endDate : Date) {
         return await this.bibleTrackRepository.findTracks(trainId, startDate, endDate);
+    }
+
+    async testMet(userId:number, trainId:number) {
+        await this.bibleTrackRepository.testMet(userId, trainId);
     }
 }
