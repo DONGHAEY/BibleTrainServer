@@ -4,16 +4,20 @@ import { STAMPSTAT } from 'src/domain/check-stamp.entity';
 import { AddBibleTrackDto } from './dto/AddBibleTrack.dto';
 import { CheckStampRepository } from './repository/check-stamp.repository';
 import { BibleTrackRepository } from './repository/bible-track.repository';
+import { TrainRepository } from 'src/train/repository/train.repository';
 
 @Injectable()
 export class BibleTrackService {
-    constructor( 
+    constructor(
+        @InjectRepository(TrainRepository) private trainRepository : TrainRepository,
         @InjectRepository(BibleTrackRepository) private bibleTrackRepository : BibleTrackRepository,
         @InjectRepository(CheckStampRepository) private checkStampRepository : CheckStampRepository,
     ) {}
 
     async createTrack(trainId : number, addBibleTrackDto : AddBibleTrackDto) :Promise<void> {
         await this.bibleTrackRepository.createTrack(trainId, addBibleTrackDto);
+        const amount = await this.bibleTrackRepository.getTrackAmount(trainId);
+        await this.trainRepository.updateTrackAmount(trainId, amount);
     }
 
     async completeTrack(trainId:number, trackDate: string, userId:number) : Promise<any> {

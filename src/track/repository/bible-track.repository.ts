@@ -14,6 +14,11 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
         });
     }
 
+    async getTrackAmount(trainId:number) {
+        const dd = await this.query(`select count(*) as amount from bible_track where train_id=${trainId}`);
+        return dd[0].amount
+    }
+
     async updateCompletedAmount(trainId :number, trackDate:string, completedAmount: number) {
         await this.query(`update bible_track SET completed_amount=${completedAmount} where train_id=${trainId} AND date='${trackDate}'`);
     }

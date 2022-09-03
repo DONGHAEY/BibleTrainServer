@@ -18,7 +18,6 @@ export class CheckStampRepository extends Repository<CheckStamp> {
     async getCheckStampAmount(trainId:number, trackDate: string) : Promise<number> {
         // this.count()
         const dd = await this.query(`SELECT COUNT(*) as amount from check_stamp where train_id=${trainId} AND track_date='${trackDate}'`);
-        console.log(dd, '---------');
         return dd[0].amount;
     }
 

@@ -73,7 +73,7 @@ export class TrainController {
         @Param('trainId') trainId : number, 
         @Body('role', TrainMembersValidationPipe) role : RoleFormat, 
         @Body('userId') userId : number
-    ) : Promise<string> 
+    ) : Promise<string>
     {
         await this.trainService.changeProfileRole(userId, trainId, role);
         return 'success';

@@ -53,7 +53,7 @@ export class BibleTrack {
 
     @Column({
         type:'int',
-        name : 'complete_amount',
+        name : 'completed_amount',
         default : 0,
     })
     completeAmount : number;

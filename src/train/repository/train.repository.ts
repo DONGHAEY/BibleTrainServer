@@ -28,6 +28,10 @@ export class TrainRepository extends Repository<Train> {
         return train;
     }
 
+    async updateTrackAmount(trainId:number, trackAmount:number) {
+        await this.query(`update train set track_amount=${trackAmount} where id=${trainId}`);
+    }
+
     async checkTrainJoinKey(trainId:number, jokey:string) : Promise<boolean> {
         console.log(jokey);
         const trainInfo : Train = await this.getTrainById(trainId);
