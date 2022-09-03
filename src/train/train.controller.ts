@@ -33,7 +33,7 @@ export class TrainController {
     @Get('/:trainId')
     async showTrainInfo(
         @Param('trainId') trainId : number
-    ) : Promise<Train> 
+    ) : Promise<Train>
     {
         return await this.trainService.getTrain(trainId); //이 메서드에서 리턴 받은 값에서.. joinKey는 포함시키지 않는다.
     }
@@ -56,6 +56,15 @@ export class TrainController {
     ) : Promise<TrainProfile[]>
     {
         return await this.trainService.getTrainProfiles(user.id);
+    }
+
+    @Get('/trainProfile/:trainId')
+    async myProfile(
+        @GetUser() user : User,
+        @Param('trainId') trainId : number
+    ) : Promise<TrainProfile>
+    {
+        return await this.trainService.getTrainProfile(user.id, trainId);
     }
 
     @Put('/:trainId/changeRole')

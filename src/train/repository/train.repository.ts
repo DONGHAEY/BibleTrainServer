@@ -9,8 +9,8 @@ export class TrainRepository extends Repository<Train> {
     async createTrain(trainName : string, userId : number) : Promise<Train> {
         const isSameName = await this.findOne( { where : { trainName } } );
         if(isSameName) {
-            throw new ConflictException('똑같은 열차 이름이 존재합니다.');
-            // throw new HttpException(, HttpStatus.BAD_REQUEST)
+            throw new HttpException('똑같은 열차 이름이 존재합니다.',HttpStatus.BAD_REQUEST);
+            // throw new ConflictException('똑같은 열차 이름이 존재합니다.');
         }
         
         const joinKey = randomBytes(4).toString('hex');

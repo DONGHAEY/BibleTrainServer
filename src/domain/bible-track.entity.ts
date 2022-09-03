@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Bible } from "./bible.entity";
 
 @Entity('bible_track')
@@ -50,4 +50,11 @@ export class BibleTrack {
         type:'varchar'
     })
     content : string;
+
+    @Column({
+        type:'int',
+        name : 'complete_amount',
+        default : 0,
+    })
+    completeAmount : number;
 }

@@ -40,6 +40,14 @@ export class TrainService {
         return await this.trainProfileRepository.getTrainProfiles(userId);
     }
 
+    async getTrainProfile(userId:number, trainId:number) {
+        const trainProfile = await this.trainProfileRepository.findOne({
+            userId,
+            trainId
+        });
+        return trainProfile
+    }
+
     async changeProfileRole(userId:number, trainId:number, role:RoleFormat) {
         const isMember : TrainProfile = await this.trainProfileRepository.getTrainProfile(userId, trainId);
         await this.trainProfileRepository.update({userId,trainId}, {role});

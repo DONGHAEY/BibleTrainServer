@@ -18,10 +18,14 @@ export class BibleTrackService {
 
     async completeTrack(trainId:number, trackDate: string, userId:number) : Promise<any> {
         await this.checkStampRepository.completeTrack(trainId,trackDate,userId);
+        const track_amount = await this.checkStampRepository.getCheckStampAmount(trainId, trackDate);
+        await this.bibleTrackRepository.updateCompletedAmount(trainId, trackDate, track_amount);
     }
 
     async cancelStamp(trainId:number, trackDate: string, userId:number) : Promise<any> {
         await this.checkStampRepository.delete({trainId,trackDate,userId});
+        const track_amount = await this.checkStampRepository.getCheckStampAmount(trainId, trackDate);
+        await this.bibleTrackRepository.updateCompletedAmount(trainId, trackDate, track_amount);
     }
 
     async showStampList(trainId:number, trackDate : Date) {

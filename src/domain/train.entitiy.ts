@@ -45,4 +45,12 @@ export class Train {
 
     @Column()
     captain:number;
+
+
+    @Column({
+        type: 'int',
+        name : 'track_amount',
+        default: 0,
+    })
+    trackAmount : number;
 }

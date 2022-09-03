@@ -15,6 +15,13 @@ export class CheckStampRepository extends Repository<CheckStamp> {
         })
     }
 
+    async getCheckStampAmount(trainId:number, trackDate: string) : Promise<number> {
+        // this.count()
+        const dd = await this.query(`SELECT COUNT(*) as amount from check_stamp where train_id=${trainId} AND track_date='${trackDate}'`);
+        console.log(dd, '---------');
+        return dd[0].amount;
+    }
+
     async getStampList(trainId : number, trackDate : Date) {
         return await this.query(`
             select profiles.*, status from (select user_id, nick_name from train_profile where train_id = ?) as profiles left join (select * from check_stamp where track_date = ?) as stamp on stamp.user_id = profiles.user_id;

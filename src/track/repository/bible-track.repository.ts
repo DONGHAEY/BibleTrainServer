@@ -6,13 +6,16 @@ import { AddBibleTrackDto } from "../dto/AddBibleTrack.dto";
 
 @EntityRepository(BibleTrack)
 export class BibleTrackRepository extends Repository<BibleTrack> {
-
     async createTrack(trainId : number, addBibleTrackDto : AddBibleTrackDto) :Promise<void> {
         await this.checkExistTrack(trainId, addBibleTrackDto.date);
         await this.save({
             trainId, 
             ...addBibleTrackDto
         });
+    }
+
+    async updateCompletedAmount(trainId :number, trackDate:string, completedAmount: number) {
+        await this.query(`update bible_track SET completed_amount=${completedAmount} where train_id=${trainId} AND date='${trackDate}'`);
     }
 
     private async checkExistTrack(trainId:number, date:Date) {
@@ -29,14 +32,14 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
 
     async findOneTrack(trainId:number, trackDate:Date, userId:number) {
         const track = await this.query(`
-        SELECT 
-        tot.*, 
+        SELECT
+        tot.*,
         st_b.chapter as start_chapter_name,
         ed_b.chapter as end_chapter_name
-        FROM (select track.train_id, track.date, track.start_chapter, track.end_chapter, track.start_page, track.end_page, stamp.status from 
+        FROM (select track.completed_amount, track.train_id, track.date, track.start_chapter,track.content, track.end_chapter, track.start_page, track.end_page, stamp.status from 
         (select * from bible_track where train_id = ? AND date = ?) as track
             left join (select * from check_stamp where train_id = ? AND track_date = ? AND user_id = ?) as stamp on
-            track.train_id = stamp.train_id AND track.date = stamp.track_date) as tot 
+            track.train_id = stamp.train_id AND track.date = stamp.track_date) as tot
             left join bible as st_b on tot.start_chapter = st_b.id
             left join bible as ed_b on tot.end_chapter = ed_b.id;
         `, [trainId, trackDate,trainId, trackDate, userId])
@@ -51,7 +54,7 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
     async findAllTracks(trainId:number, userId:number, page : number, pageSize: number = 1) {
         const list = await this.query(`
         SELECT tot.*, st_b.chapter as start_chapter_name, ed_b.chapter as end_chapter_name FROM (select * from
-            (select date, start_chapter, end_chapter, start_page, end_page, content from bible_track where train_id =?) as t 
+            (select date, start_chapter, end_chapter, start_page, end_page, content, completed_amount from bible_track where train_id =?) as t 
             left join
             (select status, track_date from check_stamp where user_id = ? AND train_id = ?) as cs 
             on t.date = cs.track_date order by date desc LIMIT ${pageSize*(page-1)}, ${(pageSize*(page-1))+pageSize}) as tot LEFT JOIN bible as st_b ON tot.start_chapter = st_b.id LEFT JOIN bible as ed_b ON tot.end_chapter = ed_b.id;
