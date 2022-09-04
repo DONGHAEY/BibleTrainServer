@@ -40,5 +40,9 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
         .select('COUNT(*) AS profile_count').groupBy('train_profile.train_id').where(`train_id = ${trainId}`).getRawOne();
     }
 
+    async test() {
+        return await this.query('select * from bible order by id');
+    }
+
     
 }

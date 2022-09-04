@@ -20,6 +20,13 @@ export class BibleTrackService {
         await this.trainRepository.updateTrackAmount(trainId, amount);
     }
 
+    async deleteTrack(trainId:number, trackDate: string, userId:number) : Promise<any> {
+        await this.bibleTrackRepository.delete({trainId,date:trackDate});
+        const track_amount = await this.checkStampRepository.getCheckStampAmount(trainId, trackDate);
+        const amount = await this.bibleTrackRepository.getTrackAmount(trainId);
+        await this.trainRepository.updateTrackAmount(trainId, amount);
+    }
+
     async completeTrack(trainId:number, trackDate: string, userId:number) : Promise<any> {
         await this.checkStampRepository.completeTrack(trainId,trackDate,userId);
         const track_amount = await this.checkStampRepository.getCheckStampAmount(trainId, trackDate);

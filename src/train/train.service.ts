@@ -24,6 +24,10 @@ export class TrainService {
         return train;
     }
 
+    async test() {
+        return await this.trainProfileRepository.test();
+    }
+
     async joinTrain(userId : number, trainId:number, {joinKey, nickName}:JoinTrainDto, role: RoleFormat)
     {
         const isTrue : boolean = await this.trainRepository.checkTrainJoinKey(trainId, joinKey);
