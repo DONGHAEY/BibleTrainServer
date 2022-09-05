@@ -9,7 +9,7 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
     async createTrack(trainId : number, addBibleTrackDto : AddBibleTrackDto) :Promise<void> {
         await this.checkExistTrack(trainId, addBibleTrackDto.date);
         await this.save({
-            trainId, 
+            trainId,
             ...addBibleTrackDto
         });
     }

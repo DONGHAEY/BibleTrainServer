@@ -39,6 +39,7 @@ export class BibleTrackController {
         return await this.bibleTrackService.getTracks(trainId, startDate, endDate);
     }
 
+
     @Post('/:trainId/addTrack')
     @TrainRoles(RoleFormat.CAPTAIN)
     @UsePipes(ValidationPipe)

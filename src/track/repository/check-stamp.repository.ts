@@ -23,8 +23,8 @@ export class CheckStampRepository extends Repository<CheckStamp> {
 
     async getStampList(trainId : number, trackDate : Date) {
         return await this.query(`
-            select profiles.*, status from (select user_id, nick_name from train_profile where train_id = ?) as profiles left join (select * from check_stamp where track_date = ?) as stamp on stamp.user_id = profiles.user_id;
-        `, [trainId, trackDate])
+            select profiles.*, status from (select user_id, nick_name, profile_image from train_profile where train_id = ?) as profiles left join (select * from check_stamp where track_date = ?) as stamp on stamp.user_id = profiles.user_id;
+        `, [trainId, trackDate]);
     }
 
     private async checkExistTrack(trainId:number, trackDate: string, userId:number) {

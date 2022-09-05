@@ -30,4 +30,5 @@ export class CheckStamp {
         enum: STAMPSTAT
     })
     status : STAMPSTAT
+    
 }

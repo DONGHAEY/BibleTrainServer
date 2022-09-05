@@ -46,4 +46,11 @@ export class TrainProfile {
     @JoinColumn({name : 'user_id'})
     user : User
 
+    @Column({
+        name:'profile_image',
+        type:"varchar",
+        default : "https://url.kr/5usx7g"
+    })
+    profileImage : string
+
 }
