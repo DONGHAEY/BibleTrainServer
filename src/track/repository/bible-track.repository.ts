@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
 import { BibleTrack } from "src/domain/bible-track.entity";
 import { CheckStamp } from "src/domain/check-stamp.entity";
 import {  AbstractRepository, Connection, EntityRepository, getRepository, Repository } from "typeorm";
@@ -37,43 +38,47 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
 
     async findOneTrack(trainId:number, trackDate:Date, userId:number) {
         const track = await this.query(`
-        SELECT
-        tot.*,
-        st_b.chapter as start_chapter_name,
-        ed_b.chapter as end_chapter_name
-        FROM (select track.completed_amount, track.train_id, track.date, track.start_chapter,track.content, track.end_chapter, track.start_page, track.end_page, stamp.status from 
+    select track.completed_amount as completedAmount, track.train_id as trainId, track.date, track.start_chapter as startChapter, track.content, track.end_chapter as endChapter, track.start_page as startPage, track.end_page as endPage, stamp.status from 
         (select * from bible_track where train_id = ? AND date = ?) as track
             left join (select * from check_stamp where train_id = ? AND track_date = ? AND user_id = ?) as stamp on
-            track.train_id = stamp.train_id AND track.date = stamp.track_date) as tot
-            left join bible as st_b on tot.start_chapter = st_b.id
-            left join bible as ed_b on tot.end_chapter = ed_b.id;
+            track.train_id = stamp.train_id AND track.date = stamp.track_date;
         `, [trainId, trackDate,trainId, trackDate, userId])
         if(!track) {
             throw new NotFoundException("특정 bible-track을 찾을 수 없습니다");
         }
-        return track;
+        return track[0];
     }
 
-    //메서드명을 예쁘게 바꾸기
-    //query 메서드로 정리하기
     async findAllTracks(trainId:number, userId:number, page : number, pageSize: number = 1) {
-        const list = await this.query(`
-        SELECT tot.*, st_b.chapter as start_chapter_name, ed_b.chapter as end_chapter_name FROM (select * from
-            (select date, start_chapter, end_chapter, start_page, end_page, content, completed_amount from bible_track where train_id =?) as t 
-            left join
-            (select status, track_date from check_stamp where user_id = ? AND train_id = ?) as cs 
-            on t.date = cs.track_date order by date desc LIMIT ${pageSize*(page-1)}, ${(pageSize*(page-1))+pageSize}) as tot LEFT JOIN bible as st_b ON tot.start_chapter = st_b.id LEFT JOIN bible as ed_b ON tot.end_chapter = ed_b.id;
-        `, [trainId, userId, trainId]);
+        const list = await this.createQueryBuilder("bible_track").select([
+	        'date',
+	        'start_chapter as startChapter',
+	        'end_chapter as endChapter',
+	        'start_page as startPage',
+	        'end_page as endPage',
+	        'content',
+	        'completed_amount as completedAmount'
+        ]).leftJoin(
+            (qb) =>
+                qb
+                .from(CheckStamp, 'check_stamp')
+                .select(['status', 'track_date'])
+                .where(`user_id = ${userId} AND train_id = ${trainId}`),
+            'L',
+            'bible_track.date = L.track_date'
+        )
+        .addSelect('L.status')
+        .where(`bible_track.train_id = ${trainId}`)
+        .orderBy('date', 'DESC')
+        .getRawMany();
+
         list.forEach(track => {
-            track.status = track.status ?  track.status:"UNCOMPLETE" 
+            track.status = track.status ?  track.status: "UNCOMPLETE" 
         });
+        console.log(list);
         return list;
     }
 
-    async testMet(user_id:number, train_id:number) {
-        const stampQb = await getRepository(CheckStamp).createQueryBuilder("check_stamp").select().where(`user_id = ${user_id} AND train_id =${train_id}`).getQuery();
-        console.log(`(${stampQb}) as cs`);
-    }
 
     // async findAllTracks(trainId:number, userId:number, page : number, pageSize: number = 1) {
     //     const list = await this.query(`
@@ -91,9 +96,9 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
 
     async findTracks( trainId:number, startDate: Date, endDate:Date) {
         return await this.query(`
-            SELECT tracks.*, stb.chapter as start_chapter_name, edb.chapter as end_chapter_name FROM 
-            (select bible_track.* from bible_track where train_id = ? AND date >=? AND date <= ?) as tracks 
-            left join bible as stb on stb.id = tracks.start_chapter left join bible as edb on edb.id = tracks.end_chapter`, 
-            [trainId, startDate, endDate])
+        SELECT tracks.*, stb.chapter as start_chapter_name, edb.chapter as end_chapter_name FROM 
+        (select bible_track.* from bible_track where train_id = ? AND date >=? AND date <= ?) as tracks 
+        left join bible as stb on stb.id = tracks.start_chapter left join bible as edb on edb.id = tracks.end_chapter`, 
+        [trainId, startDate, endDate])
     }
 }

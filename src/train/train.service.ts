@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleFormat, TrainProfile } from 'src/domain/train-profile.entity';
 import { Train } from 'src/domain/train.entitiy';
+import { CheckStampRepository } from 'src/track/repository/check-stamp.repository';
 import { JoinTrainDto } from './dto/JoinTrain.dto';
 import { MakeTrainDto } from './dto/MakeTrain.dto';
 import { TrainProfileRepository } from './repository/train-profile.repository';
@@ -12,6 +13,7 @@ export class TrainService {
     constructor(
         @InjectRepository(TrainRepository) private trainRepository: TrainRepository,
         @InjectRepository(TrainProfileRepository) private trainProfileRepository : TrainProfileRepository,
+        @InjectRepository(TrainProfileRepository) private checkStampRepository : CheckStampRepository,
     ) {}
 
     async createTrain(trainName : string, userId:number, makeTrainDto:MakeTrainDto) : Promise<Train> {
@@ -22,10 +24,6 @@ export class TrainService {
         }
         const captainProfile :TrainProfile = await this.joinTrain(userId, train.id, joinTrainDto, RoleFormat.CAPTAIN);
         return train;
-    }
-
-    async test() {
-        return await this.trainProfileRepository.test();
     }
 
     async joinTrain(userId : number, trainId:number, {joinKey, nickName}:JoinTrainDto, role: RoleFormat)

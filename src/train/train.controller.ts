@@ -86,9 +86,4 @@ export class TrainController {
         await this.trainService.deleteTrainProfile(user.id, trainId);
         return 'success';
     }
-
-    @Post('/test')
-    async test() {
-        return await this.trainService.test();
-    }
 }

@@ -39,7 +39,6 @@ export class BibleTrackController {
         return await this.bibleTrackService.getTracks(trainId, startDate, endDate);
     }
 
-
     @Post('/:trainId/addTrack')
     @TrainRoles(RoleFormat.CAPTAIN)
     @UsePipes(ValidationPipe)
@@ -62,6 +61,17 @@ export class BibleTrackController {
         return await this.bibleTrackService.getTrack(trainId, trackDate, user.id);
     }
 
+    @Post('/:trainId/:trackDate/cancelStamp')
+    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
+    async cancelStamp(
+        @GetUser() user : User,
+        @Param('trainId') trainId: number,
+        @Param('trackDate') trackDate:string,
+    ) : Promise<void> 
+    {
+        await this.bibleTrackService.cancelStamp(trainId, trackDate, user.id);
+    }
+
     @Post('/:trainId/:trackDate/complete')
     @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
     async completeTrack(
@@ -82,17 +92,6 @@ export class BibleTrackController {
     ) : Promise<void> 
     {
         await this.bibleTrackService.deleteTrack(trainId, trackDate, user.id);
-    }
-
-    @Post('/:trainId/:trackDate/cancelStamp')
-    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
-    async cancelStamp(
-        @GetUser() user : User,
-        @Param('trainId') trainId: number,
-        @Param('trackDate') trackDate:string,
-    ) : Promise<void> 
-    {
-        await this.bibleTrackService.cancelStamp(trainId, trackDate, user.id);
     }
 
     //특정 날에 train 내 사용자들의 스탬프 리스트를 불러온다.

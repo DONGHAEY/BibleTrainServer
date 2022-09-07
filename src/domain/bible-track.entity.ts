@@ -3,15 +3,16 @@ import { Bible } from "./bible.entity";
 
 @Entity('bible_track')
 export class BibleTrack {
-    @PrimaryColumn({
+
+    @PrimaryColumn( {
         name:'train_id',
         type:'int'
-    })
+    } )
     trainId:number;
 
-    @PrimaryColumn({
+    @PrimaryColumn( {
         type:"date"
-    })
+    } )
     date: Date;
 
     @Column({
@@ -20,19 +21,11 @@ export class BibleTrack {
     })
     startChapter : number;
 
-    @ManyToOne(type => Bible, bible => bible.chapter)
-    @JoinColumn({name : 'start_chapter'})
-    startChapterInfo : Bible
-
     @Column({
         name:'end_chapter',
         type:'int'
     })
     endChapter : number;
-
-    @ManyToOne(type => Bible, bible => bible.chapter)
-    @JoinColumn({name : 'end_chapter'})
-    endChapterInfo : Bible
 
     @Column({
         name:'start_page',

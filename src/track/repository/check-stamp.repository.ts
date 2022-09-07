@@ -15,8 +15,14 @@ export class CheckStampRepository extends Repository<CheckStamp> {
         })
     }
 
+    async deleteCheckStampsForOneTrack(trainId : number, trackDate:string) : Promise<void> {
+        await this.delete({
+            trainId,
+            trackDate
+        });
+    }
+
     async getCheckStampAmount(trainId:number, trackDate: string) : Promise<number> {
-        // this.count()
         const dd = await this.query(`SELECT COUNT(*) as amount from check_stamp where train_id=${trainId} AND track_date='${trackDate}'`);
         return dd[0].amount;
     }
