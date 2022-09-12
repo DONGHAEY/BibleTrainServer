@@ -1,5 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Bible } from "./bible.entity";
+import { CheckStamp } from "./check-stamp.entity";
+import { Train } from "./train.entitiy";
 
 @Entity('bible_track')
 export class BibleTrack {
@@ -50,4 +52,14 @@ export class BibleTrack {
         default : 0,
     })
     completeAmount : number;
+
+    @ManyToOne(type => Train, train => train.tracks)
+    @JoinColumn({name:'train_id'})
+    train : Train
+
+    @OneToMany(type => CheckStamp, checkStamp => checkStamp.track)
+    checkStamps : CheckStamp[]
+
+    // @OneToOne(type => CheckStamp, checkStamp=> checkstamp)
+    // myCheckStamp : CheckStamp
 }

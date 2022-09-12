@@ -12,9 +12,11 @@ import { TrainService } from './train.service';
 import { AuthService } from 'src/auth/auth.service';
 import { TrainRepository } from './repository/train.repository';
 import { TrainProfileRepository } from './repository/train-profile.repository';
+import { TrackModule } from 'src/track/track.module';
 
 @Module({
   imports : [
+    // TrackModule,
     TypeOrmModule.forFeature([TrainRepository, TrainProfileRepository]),
   ],
   exports : [TypeOrmModule, TrainService],

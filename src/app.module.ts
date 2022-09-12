@@ -25,8 +25,6 @@ import { CheckStamp } from './domain/check-stamp.entity';
       password: '9310',
       database: 'bibleTrain',
       synchronize: false,
-      // database: 'test1',
-      // synchronize: false,
       entities: [UserAuthority,User, Train, TrainProfile, Bible, BibleTrack, CheckStamp],
       logging:true,
     }),

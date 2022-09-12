@@ -33,50 +33,70 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
 
     async findOneByPk(trainId:number, date:Date) {
         const bibleTrack : BibleTrack = await this.findOne({trainId, date});
+        console.log(bibleTrack);
         return bibleTrack;
     }
 
     async findOneTrack(trainId:number, trackDate:Date, userId:number) {
-        const track = await this.query(`
-    select track.completed_amount as completedAmount, track.train_id as trainId, track.date, track.start_chapter as startChapter, track.content, track.end_chapter as endChapter, track.start_page as startPage, track.end_page as endPage, stamp.status from 
-        (select * from bible_track where train_id = ? AND date = ?) as track
-            left join (select * from check_stamp where train_id = ? AND track_date = ? AND user_id = ?) as stamp on
-            track.train_id = stamp.train_id AND track.date = stamp.track_date;
-        `, [trainId, trackDate,trainId, trackDate, userId])
-        if(!track) {
-            throw new NotFoundException("특정 bible-track을 찾을 수 없습니다");
-        }
-        return track[0];
+    //     const track = await this.query(`
+    // select track.completed_amount as completedAmount, track.train_id as trainId, track.date, track.start_chapter as startChapter, track.content, track.end_chapter as endChapter, track.start_page as startPage, track.end_page as endPage, stamp.status from 
+    //     (select * from bible_track where train_id = ? AND date = ?) as track
+    //         left join (select * from check_stamp where train_id = ? AND track_date = ? AND user_id = ?) as stamp on
+    //         track.train_id = stamp.train_id AND track.date = stamp.track_date;
+    //     `, [trainId, trackDate,trainId, trackDate, userId])
+    //     if(!track) {
+    //         throw new NotFoundException("특정 bible-track을 찾을 수 없습니다");
+    //     }
+    //     return track[0];
+
+    const bibleTrack = await this.findOne({
+        where: {
+            trainId,
+            date : trackDate
+        },
+        relations:['checkStamps']
+    });
+    console.log(bibleTrack);
+    return bibleTrack;
+
     }
 
     async findAllTracks(trainId:number, userId:number, page : number, pageSize: number = 1) {
-        const list = await this.createQueryBuilder("bible_track").select([
-	        'date',
-	        'start_chapter as startChapter',
-	        'end_chapter as endChapter',
-	        'start_page as startPage',
-	        'end_page as endPage',
-	        'content',
-	        'completed_amount as completedAmount'
-        ]).leftJoin(
-            (qb) =>
-                qb
-                .from(CheckStamp, 'check_stamp')
-                .select(['status', 'track_date'])
-                .where(`user_id = ${userId} AND train_id = ${trainId}`),
-            'L',
-            'bible_track.date = L.track_date'
-        )
-        .addSelect('L.status')
-        .where(`bible_track.train_id = ${trainId}`)
-        .orderBy('date', 'DESC')
-        .getRawMany();
+        // const list = await this.createQueryBuilder("bible_track").select([
+	    //     'date',
+	    //     'start_chapter as startChapter',
+	    //     'end_chapter as endChapter',
+	    //     'start_page as startPage',
+	    //     'end_page as endPage',
+	    //     'content',
+	    //     'completed_amount as completedAmount'
+        // ]).leftJoin(
+        //     (qb) =>
+        //         qb
+        //         .from(CheckStamp, 'check_stamp')
+        //         .select(['status', 'track_date'])
+        //         .where(`user_id = ${userId} AND train_id = ${trainId}`),
+        //     'L',
+        //     'bible_track.date = L.track_date'
+        // )
+        // .addSelect('L.status')
+        // .where(`bible_track.train_id = ${trainId}`)
+        // .orderBy('date', 'DESC')
+        // .getRawMany();
 
-        list.forEach(track => {
-            track.status = track.status ?  track.status: "UNCOMPLETE" 
+        // return list;
+
+        const bibleTracks = await this.find({
+            where: {
+                trainId
+            },
+            relations:['checkStamps'],
+            order:{
+                date:'DESC'
+            }
         });
-        console.log(list);
-        return list;
+        console.log(bibleTracks);
+        return bibleTracks;
     }
 
 

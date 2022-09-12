@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { HttpException, HttpStatus, Ip } from "@nestjs/common";
 import { RoleFormat, TrainProfile } from "src/domain/train-profile.entity";
 import {  EntityRepository, Repository } from "typeorm";
 
@@ -37,8 +37,20 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
 
     async getProfileCount(trainId: number) : Promise<{profile_count : number}> {
         return await this.createQueryBuilder('train_profile')
-        .select('COUNT(*) AS profile_count').groupBy('train_profile.train_id').where(`train_id = ${trainId}`).getRawOne();
+        .select('COUNT(*) AS profile_count').groupBy('train_profile.train_id').where(`train_id = ${trainId}`).getRawOne(); //profileCount로 고치기
     }
 
-    
+
+    async findByIdAndUpdateImg(userId:number, trainId:number, fileName : string) {
+        const user = await this.findOne({
+            userId,
+            trainId,
+        })
+        user.profileImage = `http://10.150.149.50:8000/media/${fileName}`;
+        const nuser = await this.update({
+            userId,
+            trainId
+        }, user);
+        return nuser;
+    }
 }

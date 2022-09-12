@@ -1,5 +1,6 @@
 import { userInfo } from "os";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BibleTrack } from "./bible-track.entity";
 import { TrainProfile } from "./train-profile.entity";
 import { User } from "./user.entity";
 
@@ -11,7 +12,6 @@ import { User } from "./user.entity";
 
 @Entity('train')
 export class Train {
-
     @PrimaryGeneratedColumn()
     id : number
 
@@ -28,24 +28,18 @@ export class Train {
     @OneToMany(type => TrainProfile, trainProfile => trainProfile.trainId)
     members? : any[];
 
-    @Column('varchar', { 
+    @OneToMany(type => BibleTrack, bibleTrack => bibleTrack.train)
+    tracks : BibleTrack[]
+
+    @Column('varchar', {
         name:'join_key', 
         default:'',
         // nullable:false,
     })
     joinKey : string;
 
-
-
-    // @Column('enum', {
-    //     name :'train_type',
-    //     enum : TrainType
-    // })
-    // trainType : TrainType
-
     @Column()
     captain:number;
-
 
     @Column({
         type: 'int',

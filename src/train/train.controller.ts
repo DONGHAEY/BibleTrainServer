@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Patch, Post, Put, Query, Req, UploadedFiles, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { GetUser } from 'src/auth/decorator/userinfo.decorator';
 import { AuthGuard } from 'src/auth/security/auth.guard';
@@ -11,6 +11,8 @@ import { TrainRolesGuard } from './guard/train-roles.guard';
 import { TrainRoles } from './decorator/train-role.decorator';
 import { TrainMembersValidationPipe } from './pipes/train-member-validation.pipe';
 import { JoinTrainDto } from './dto/JoinTrain.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/common/utils';
 
 @Controller('/train')
 @UseGuards(AuthGuard, TrainRolesGuard)
@@ -50,6 +52,14 @@ export class TrainController {
         return '기차에 탑승되었습니다.'
     }
 
+    @Get('/:trainId/trainMemberProfiles')
+    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
+    async trainMembersProfiles(
+        @Param('trainId') trainId : number
+    ) : Promise<TrainProfile[]> {
+        return await this.trainService.getTrainMembersProfiles(trainId);
+    }
+
     @Post('/trainProfiles')
     async myProfiles(
         @GetUser() user : User
@@ -58,8 +68,10 @@ export class TrainController {
         return await this.trainService.getTrainProfiles(user.id);
     }
 
+    
+
     @Get('/trainProfile/:trainId')
-    async myProfile(
+    async getMyProfile(
         @GetUser() user : User,
         @Param('trainId') trainId : number
     ) : Promise<TrainProfile>
@@ -79,11 +91,34 @@ export class TrainController {
         return 'success';
     }
 
+    //profileImage Upload Method
+    @Post('/:trainId/changeProfileImg')
+    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
+    @UseInterceptors(FilesInterceptor('img', 10, multerOptions('userProfiles')))
+    uploadProfileImg(
+      @UploadedFiles() files: Array<Express.Multer.File>,
+    @Param('trainId') trainId : number,
+      @GetUser() user: User,
+    ) {
+      return this.trainService.uploadImg(user.id, trainId, files); // 첫번째 인자는 로그인된 인자
+    }
+
+    @Get('/:trainId/:userId')
+    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
+    async getOtherTrainProfile(
+        @Param('trainId') trainId : number,
+        @Param('userId') userId : number
+    ) {
+        return await this.trainService.getTrainProfile(userId, trainId);
+    }
+
     @Delete('/:trainId')
     @TrainRoles(RoleFormat.CREW, RoleFormat.VIEWER)
     async deleteProfile(@GetUser() user : User, @Param('trainId') trainId : number) : Promise<string> 
     {
-        await this.trainService.deleteTrainProfile(user.id, trainId);
+        // await this.trainService.deleteTrainProfile(user.id, trainId);
         return 'success';
     }
+
+
 }

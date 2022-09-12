@@ -20,15 +20,21 @@ export class CheckStampRepository extends Repository<CheckStamp> {
             trainId,
             trackDate
         });
-    }
+    } //나중에 이 메서드가 필요없도록 ONDELETE속성을 만들어주자..
 
-    async getCheckStampAmount(trainId:number, trackDate: string) : Promise<number> {
+    async getTrackCheckStampAmount(trainId:number, trackDate: string) : Promise<number> {
         const dd = await this.query(`SELECT COUNT(*) as amount from check_stamp where train_id=${trainId} AND track_date='${trackDate}'`);
         return dd[0].amount;
     }
 
-    async getStampList(trainId : number, trackDate : Date) {
-        return await this.query(`
+    async getMyAllCheckStampAmount(trainId:number, userId: number) : Promise<number> {
+        const dd = await this.query(`SELECT COUNT(*) as amount from check_stamp where train_id=${trainId} AND user_id='${userId}'`);
+        console.log( dd[0].amount)
+        return dd[0].amount;
+    }
+
+    async getStampList(trainId : number, trackDate : string) {
+        return this.query(`
             select profiles.*, status from (select user_id, nick_name, profile_image from train_profile where train_id = ?) as profiles left join (select * from check_stamp where track_date = ?) as stamp on stamp.user_id = profiles.user_id;
         `, [trainId, trackDate]);
     }

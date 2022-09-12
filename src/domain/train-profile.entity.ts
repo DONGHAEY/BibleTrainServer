@@ -1,5 +1,6 @@
 import { ROUTES } from "@nestjs/core/router/router-module";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { CheckStamp } from "./check-stamp.entity";
 import { Train } from "./train.entitiy";
 import { User } from "./user.entity";
 
@@ -30,7 +31,6 @@ export class TrainProfile {
     @JoinColumn({name : 'train_id'})
     train : Train
 
-
     @Column({
         name : 'nick_name'
     })
@@ -42,6 +42,14 @@ export class TrainProfile {
     })
     role : RoleFormat
 
+    @Column({
+        type:'int',
+        default:0,
+        name:'complete_count'
+    })
+    completeCount : number
+    
+
     @ManyToOne(type => User, user => user.myProfiles)
     @JoinColumn({name : 'user_id'})
     user : User
@@ -52,5 +60,8 @@ export class TrainProfile {
         default : "https://url.kr/5usx7g"
     })
     profileImage : string
+
+    @OneToMany(type => CheckStamp, checkStamp => checkStamp.trainProfile)
+    checkStamps : CheckStamp[]
 
 }

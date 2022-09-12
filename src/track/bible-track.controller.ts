@@ -24,7 +24,9 @@ export class BibleTrackController {
         @Param('trainId') trainId: number,
         @Query('page') page:number=1
     ) : Promise<any> {
-        return await this.bibleTrackService.getTrackList(trainId, user.id, page, 6);
+        const d = await this.bibleTrackService.getTrackList(trainId, user.id, page, 6);
+        console.log(d);
+        return d;
     }
 
     //captain의 보기용 // StartDate ~ EndDate 날짜로해서 받을 수 있도록 메서드로 정의한다.
@@ -77,8 +79,8 @@ export class BibleTrackController {
     async completeTrack(
         @GetUser() user : User,
         @Param('trainId') trainId: number,
-        @Param('trackDate') trackDate:string
-    ) : Promise<void> 
+        @Param('trackDate') trackDate:string,
+    ) : Promise<void>
     {
         await this.bibleTrackService.completeTrack(trainId, trackDate, user.id);
     }
@@ -101,7 +103,7 @@ export class BibleTrackController {
     async showStampList(
         @GetUser() user: User,
         @Param('trainId') trainId: number,
-        @Param('trackDate') trackDate:Date
+        @Param('trackDate') trackDate:string
     ) : Promise<any>
     {
         return await this.bibleTrackService.showStampList(trainId, trackDate);

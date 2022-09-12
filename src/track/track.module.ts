@@ -7,9 +7,11 @@ import { CheckStampRepository } from './repository/check-stamp.repository';
 import { BibleTrackRepository } from './repository/bible-track.repository';
 
 @Module({
-  imports:[TrainModule,
+  imports:[
+    TrainModule,
     TypeOrmModule.forFeature([BibleTrackRepository, CheckStampRepository]),
   ],
+  exports:[TypeOrmModule],
   controllers: [BibleTrackController],
   providers: [BibleTrackService]
 })
