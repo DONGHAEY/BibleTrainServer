@@ -29,6 +29,7 @@ export class Train {
     members? : any[];
 
     @OneToMany(type => BibleTrack, bibleTrack => bibleTrack.train)
+    
     tracks : BibleTrack[]
 
     @Column('varchar', {

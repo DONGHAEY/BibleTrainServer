@@ -28,7 +28,7 @@ export class UserService {
             user.password, 
             10
         );
-        return Promise.resolve();
+        return Promise.resolve()
     }
 
     // async deleteUser(userId : number) {

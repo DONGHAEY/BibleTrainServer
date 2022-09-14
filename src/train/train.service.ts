@@ -16,7 +16,7 @@ export class TrainService {
     constructor(
         @InjectRepository(TrainRepository) private trainRepository: TrainRepository,
         @InjectRepository(TrainProfileRepository) private trainProfileRepository : TrainProfileRepository,
-        private bibleTrackService : BibleTrackService
+        @InjectRepository(BibleTrackRepository) private bibleTrackRepository : BibleTrackRepository
     ) {  }
 
     /*/ 기차를 생성하는 메서드 /*/
@@ -90,6 +90,12 @@ export class TrainService {
     async updateMemberCount(trainId : number) {
         const { profile_count } = await this.trainProfileRepository.getProfileCount(trainId);
         await this.trainRepository.update({id:trainId}, {memberCount:profile_count});
+    }
+
+    /*/ 자신의 기차 트랙수 컬럼을 업데이트 시키는 메서드 /*/
+    async updateTrackAmount(trainId : number) {
+        const amount = await this.bibleTrackRepository.getTrackAmount(trainId);
+        await this.trainRepository.updateTrackAmount(trainId, amount);
     }
 
     /*/ 자신의 기차 프로필 이미지를 변경시키는 메서드 /*/

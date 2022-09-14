@@ -19,7 +19,7 @@ import { TrackModule } from '../track/track.module';
     forwardRef(() => TrackModule),
     TypeOrmModule.forFeature([TrainRepository, TrainProfileRepository]),
   ],
-  exports : [TypeOrmModule],
+  exports : [TypeOrmModule,TrainService],
   controllers: [TrainController],
   providers: [TrainService]
 })
