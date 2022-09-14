@@ -21,7 +21,6 @@ export class TrainProfile {
     })
     userId : number
 
-
     @PrimaryColumn({
         name: 'train_id'
     })
@@ -41,15 +40,7 @@ export class TrainProfile {
         enum:RoleFormat,
     })
     role : RoleFormat
-
-    @Column({
-        type:'int',
-        default:0,
-        name:'complete_count'
-    })
-    completeCount : number
     
-
     @ManyToOne(type => User, user => user.myProfiles)
     @JoinColumn({name : 'user_id'})
     user : User

@@ -46,13 +46,6 @@ export class BibleTrack {
     })
     content : string;
 
-    @Column({
-        type:'int',
-        name : 'completed_amount',
-        default : 0,
-    })
-    completeAmount : number;
-
     @ManyToOne(type => Train, train => train.tracks)
     @JoinColumn({name:'train_id'})
     train : Train

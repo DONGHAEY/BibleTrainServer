@@ -16,7 +16,7 @@ export class BibleTrackController {
         private bibleTrackService : BibleTrackService
     ) {  }
 
-    //일반 사용자 UI용
+    /*/ 특정 기차의 트랙들을 반환한다 /*/
     @Get('/:trainId')
     @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW, RoleFormat.VIEWER)
     async showGeneralTrackList(
@@ -29,18 +29,7 @@ export class BibleTrackController {
         return d;
     }
 
-    //captain의 보기용 // StartDate ~ EndDate 날짜로해서 받을 수 있도록 메서드로 정의한다.
-    //getTrackList 메서드를 join 옵션을 추가하고, 날짜로 term을 만들 수 있도록 정의한다.
-    @Get('/:trainId/showTrackList')
-    @TrainRoles(RoleFormat.CAPTAIN)
-    async showTrackListWithTerm(
-        @Param('trainId') trainId: number, 
-        @Query('startDate') startDate:Date,
-        @Query('endDate') endDate : Date,
-    ) : Promise<any> {
-        return await this.bibleTrackService.getTracks(trainId, startDate, endDate);
-    }
-
+    /*/ 특정 기차의 트랙을 추가한다 /*/
     @Post('/:trainId/addTrack')
     @TrainRoles(RoleFormat.CAPTAIN)
     @UsePipes(ValidationPipe)
@@ -53,6 +42,7 @@ export class BibleTrackController {
         return 'okay'
     }
 
+    /*/ 특정 트랙 정보를 반환한다 /*/
     @Get('/:trainId/:trackDate')
     @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW, RoleFormat.VIEWER)
     async showTrack(
@@ -60,9 +50,10 @@ export class BibleTrackController {
         @Param('trainId') trainId : number,
         @Param('trackDate') trackDate : Date
     ) {
-        return await this.bibleTrackService.getTrack(trainId, trackDate, user.id);
+        return await this.bibleTrackService.getTrackInfo(trainId, trackDate, user.id);
     }
 
+    /*/ 특정 트랙의 참여를 취소한다 /*/
     @Post('/:trainId/:trackDate/cancelStamp')
     @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
     async cancelStamp(
@@ -74,6 +65,7 @@ export class BibleTrackController {
         await this.bibleTrackService.cancelStamp(trainId, trackDate, user.id);
     }
 
+    /*/ 특정 트랙의 참여를 완료한다 /*/
     @Post('/:trainId/:trackDate/complete')
     @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
     async completeTrack(
@@ -85,6 +77,7 @@ export class BibleTrackController {
         await this.bibleTrackService.completeTrack(trainId, trackDate, user.id);
     }
 
+    /*/ 특정트랙을 삭제한다 /*/
     @Post('/:trainId/:trackDate/deleteTrack')
     @TrainRoles(RoleFormat.CAPTAIN)
     async deleteTrack(
@@ -95,20 +88,4 @@ export class BibleTrackController {
     {
         await this.bibleTrackService.deleteTrack(trainId, trackDate, user.id);
     }
-
-    //특정 날에 train 내 사용자들의 스탬프 리스트를 불러온다.
-    //날짜로해서 받을 수 있도록 메서드로 재 정의한다.
-    @Get('/:trainId/:trackDate/showStampList')
-    @TrainRoles(RoleFormat.CAPTAIN)
-    async showStampList(
-        @GetUser() user: User,
-        @Param('trainId') trainId: number,
-        @Param('trackDate') trackDate:string
-    ) : Promise<any>
-    {
-        return await this.bibleTrackService.showStampList(trainId, trackDate);
-    }
-
-    //특정 날에 train 내 사용자들의 스탬프 리스트를 불러온다.
-    //날짜로해서 받을 수 있도록 메서드로 재 정의한다.
 }

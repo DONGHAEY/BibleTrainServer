@@ -5,13 +5,11 @@ import { UserDto } from "./dto/user.dto";
 import { UserRepository } from "./repository/user.repository";
 import * as bcrypt from 'bcrypt';
 import { User } from "src/domain/user.entity";
-import { TrainService } from "src/train/train.service";
 
 @Injectable()
 export class UserService {
 
     constructor(
-        private trainService : TrainService,
         @InjectRepository(UserRepository) private userRepository: UserRepository,
     ) {  }
 

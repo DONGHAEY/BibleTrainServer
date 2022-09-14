@@ -9,7 +9,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './security/passport.jwt.strategy';
 import { UserAuthorityRepository } from './repository/user-authority.repository';
 import { AuthGuard } from './security/auth.guard';
-import { TrainModule } from 'src/train/train.module';
 
 @Module({
   imports : [
@@ -19,7 +18,6 @@ import { TrainModule } from 'src/train/train.module';
       signOptions : {expiresIn : '1000s'}
     }),
     PassportModule,
-    TrainModule
   ],
   exports : [TypeOrmModule],
   controllers: [AuthController],

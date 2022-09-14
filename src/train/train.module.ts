@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserRepository } from 'src/auth/repository/user.repository';
@@ -12,14 +12,14 @@ import { TrainService } from './train.service';
 import { AuthService } from 'src/auth/auth.service';
 import { TrainRepository } from './repository/train.repository';
 import { TrainProfileRepository } from './repository/train-profile.repository';
-import { TrackModule } from 'src/track/track.module';
+import { TrackModule } from '../track/track.module';
 
 @Module({
   imports : [
-    // TrackModule,
+    forwardRef(() => TrackModule),
     TypeOrmModule.forFeature([TrainRepository, TrainProfileRepository]),
   ],
-  exports : [TypeOrmModule, TrainService],
+  exports : [TypeOrmModule],
   controllers: [TrainController],
   providers: [TrainService]
 })
