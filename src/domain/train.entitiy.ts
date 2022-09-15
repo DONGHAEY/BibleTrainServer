@@ -25,10 +25,14 @@ export class Train {
     @Column('int', { name : 'member_count', default:0, nullable:true})
     memberCount : number;
 
-    @OneToMany(type => TrainProfile, trainProfile => trainProfile.trainId)
+    @OneToMany(type => TrainProfile, trainProfile => trainProfile.trainId, {
+        cascade:true
+    })
     members? : any[];
 
-    @OneToMany(type => BibleTrack, bibleTrack => bibleTrack.train)
+    @OneToMany(type => BibleTrack, bibleTrack => bibleTrack.train , {
+        cascade:true
+    })
     
     tracks : BibleTrack[]
 

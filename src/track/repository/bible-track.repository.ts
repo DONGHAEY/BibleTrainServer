@@ -15,13 +15,6 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
             ...addBibleTrackDto
         });
     }
-
-    private async checkExistTrack(trainId:number, date:Date) {
-        const bibleTrack : BibleTrack = await this.findOne({trainId, date});
-        if(bibleTrack) {
-            throw new HttpException('이미 같은 pk로 존재하는 트랙이 있습니다', HttpStatus.FOUND);
-        }
-    }
     async findOneTrack(trainId:number, trackDate:Date, userId:number) {
 
     return await this.findOne({
@@ -45,5 +38,17 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
         });
         console.log(bibleTracks);
         return bibleTracks;
+    }
+
+    async getTrackAmount(trainId : number) {
+        return await this.createQueryBuilder('bible-track').where(`train_id=${trainId}`).getCount();
+    }
+
+
+    private async checkExistTrack(trainId:number, date:Date) {
+        const bibleTrack : BibleTrack = await this.findOne({trainId, date});
+        if(bibleTrack) {
+            throw new HttpException('이미 같은 pk로 존재하는 트랙이 있습니다', HttpStatus.FOUND);
+        }
     }
 }

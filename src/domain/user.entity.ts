@@ -16,6 +16,8 @@ export class User {
     @OneToMany(type=>UserAuthority, userAuthority => userAuthority.user, {eager:true})
     authorities? : any[];
 
-    @OneToMany(type => TrainProfile, trainProfile => trainProfile.user)
+    @OneToMany(type => TrainProfile, trainProfile => trainProfile.user, {
+        cascade:true
+    })
     myProfiles? : any[];
 }

@@ -26,7 +26,9 @@ export class TrainProfile {
     })
     trainId : number
 
-    @ManyToOne(type => Train, train => train.members)
+    @ManyToOne(type => Train, train => train.members, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({name : 'train_id'})
     train : Train
 
@@ -41,7 +43,9 @@ export class TrainProfile {
     })
     role : RoleFormat
     
-    @ManyToOne(type => User, user => user.myProfiles)
+    @ManyToOne(type => User, user => user.myProfiles,{
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({name : 'user_id'})
     user : User
 
@@ -52,7 +56,9 @@ export class TrainProfile {
     })
     profileImage : string
 
-    @OneToMany(type => CheckStamp, checkStamp => checkStamp.trainProfile)
+    @OneToMany(type => CheckStamp, checkStamp => checkStamp.trainProfile, {
+        cascade:true
+    })
     checkStamps : CheckStamp[]
 
 }

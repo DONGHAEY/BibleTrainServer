@@ -46,11 +46,13 @@ export class BibleTrack {
     })
     content : string;
 
-    @ManyToOne(type => Train, train => train.tracks)
+    @ManyToOne(type => Train, train => train.tracks, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({name:'train_id'})
     train : Train
 
-    @OneToMany(type => CheckStamp, checkStamp => checkStamp.track)
+    @OneToMany(type => CheckStamp, checkStamp => checkStamp.track, {cascade:true})
     checkStamps : CheckStamp[]
 
     // @OneToOne(type => CheckStamp, checkStamp=> checkstamp)

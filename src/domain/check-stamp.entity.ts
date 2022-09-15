@@ -34,7 +34,9 @@ export class CheckStamp {
     })
     status : STAMPSTAT
 
-    @ManyToOne(type => BibleTrack, bibleTrack => bibleTrack.checkStamps)
+    @ManyToOne(type => BibleTrack, bibleTrack => bibleTrack.checkStamps, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn(
         [
             {name:'train_id', referencedColumnName:'trainId'}, 
@@ -43,7 +45,9 @@ export class CheckStamp {
     )
     track : BibleTrack
 
-    @ManyToOne(type => TrainProfile, trainProfile => trainProfile.checkStamps)
+    @ManyToOne(type => TrainProfile, trainProfile => trainProfile.checkStamps, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn([
         {name : 'user_id', referencedColumnName:'userId'}, 
         {name:'train_id', referencedColumnName:'trainId'}
