@@ -57,7 +57,7 @@ export class BibleTrackService {
     /*/ 특정 기차의 모든 트랙들을 반환하는 메서드 /*/ 
     //페이지네이션 기능 추가예정
     async getTrackList(trainId:number, userId:number, page:number, pageSize:number): Promise<any> {
-        const list = await this.bibleTrackRepository.findAllTracks(trainId,userId, page, pageSize);
+        const list = await this.bibleTrackRepository.findAllTracks(trainId,page, pageSize);
         return list.map((track) => {
             const userStamp = track.checkStamps && track.checkStamps.length ? track.checkStamps.find(stamp => stamp.userId === userId) : null;
             const newObj = {
@@ -66,5 +66,9 @@ export class BibleTrackService {
             }
             return newObj;
          })
+    }
+
+    async getTrackListWidthPeriod(trainId:number, startDate:Date, endDate:Date) {
+        return await this.bibleTrackRepository.findPeriodTracks(trainId, startDate, endDate);
     }
 }

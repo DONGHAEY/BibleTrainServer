@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { BibleTrack } from "src/domain/bible-track.entity";
 import { CheckStamp } from "src/domain/check-stamp.entity";
-import {  AbstractRepository, Connection, EntityRepository, getRepository, Repository } from "typeorm";
+import {  AbstractRepository, Between, Connection, EntityRepository, getRepository, Repository } from "typeorm";
 import { AddBibleTrackDto } from "../dto/AddBibleTrack.dto";
 
 @EntityRepository(BibleTrack)
@@ -26,7 +26,7 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
     });
     }
 
-    async findAllTracks(trainId:number, userId:number, page : number, pageSize: number = 1) {
+    async findAllTracks(trainId:number, page : number, pageSize: number = 1) {
         const bibleTracks = await this.find({
             where: {
                 trainId
@@ -36,14 +36,30 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
                 date:'DESC'
             }
         });
-        console.log(bibleTracks);
         return bibleTracks;
+    }
+
+    async findPeriodTracks(trainId : number, startDate : Date, endDate: Date) {
+        const list = await this.find({
+            where: {
+                trainId,
+                date : Between(
+                    startDate,
+                    endDate
+                )
+            },
+            relations:['checkStamps'],
+            order:{
+                date:'ASC'
+            }
+        });
+        console.log(list);
+        return list;
     }
 
     async getTrackAmount(trainId : number) {
         return await this.createQueryBuilder('bible-track').where(`train_id=${trainId}`).getCount();
     }
-
 
     private async checkExistTrack(trainId:number, date:Date) {
         const bibleTrack : BibleTrack = await this.findOne({trainId, date});

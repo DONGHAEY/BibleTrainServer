@@ -24,9 +24,7 @@ export class BibleTrackController {
         @Param('trainId') trainId: number,
         @Query('page') page:number=1
     ) : Promise<any> {
-        const d = await this.bibleTrackService.getTrackList(trainId, user.id, page, 6);
-        console.log(d);
-        return d;
+        return await this.bibleTrackService.getTrackList(trainId, user.id, page, 6);
     }
 
     /*/ 특정 기차의 트랙을 추가한다 /*/
@@ -87,5 +85,17 @@ export class BibleTrackController {
     ) : Promise<void> 
     {
         await this.bibleTrackService.deleteTrack(trainId, trackDate, user.id);
+    }
+
+
+    @Post("/:trainId/analysis")
+    @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW)
+    async trainAnalysis(
+        @GetUser() user : User,
+        @Param('trainId') trainId : number,
+        @Query('startDate') startDate : Date = new Date(),
+        @Query('endDate') endDate : Date = new Date()
+    ) {
+        return this.bibleTrackService.getTrackListWidthPeriod(trainId, startDate, endDate);
     }
 }
