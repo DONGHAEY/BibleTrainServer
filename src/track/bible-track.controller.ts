@@ -34,7 +34,7 @@ export class BibleTrackController {
     async addTrack(
         @Param('trainId') trainId: number, 
         @Body() addBibleTrackDto : AddBibleTrackDto
-    ) : Promise<string> 
+    ) : Promise<string>
     {
         await this.bibleTrackService.createTrack(trainId, addBibleTrackDto);
         return 'okay'

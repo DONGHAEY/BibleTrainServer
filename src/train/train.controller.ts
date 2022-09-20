@@ -40,7 +40,7 @@ export class TrainController {
     ) : Promise<Train>
     {
         const train = await this.trainService.getTrain(trainId);
-        delete train.joinKey; //이 메서드에서 리턴 받은 값에서.. joinKey는 포함시키지 않는다. 왜냐하면 joinKey가 유출되면 누구나 들어올 수 있기 때문이다.
+        // delete train.joinKey; //이 메서드에서 리턴 받은 값에서.. joinKey는 포함시키지 않는다. 왜냐하면 joinKey가 유출되면 누구나 들어올 수 있기 때문이다.
         return train
     }
 

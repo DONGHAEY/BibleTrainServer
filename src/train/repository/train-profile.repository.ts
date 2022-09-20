@@ -46,7 +46,7 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
             userId,
             trainId,
         })
-        user.profileImage = `http://10.150.149.50:8000/media/${fileName}`;
+        user.profileImage = `http://localhost:8000/media/${fileName}`;
         const nuser = await this.update({
             userId,
             trainId
