@@ -2,14 +2,7 @@ import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { BibleTrack } from 'src/domain/bible-track.entity';
 import { CheckStamp } from 'src/domain/check-stamp.entity';
-import {
-  AbstractRepository,
-  Between,
-  Connection,
-  EntityRepository,
-  getRepository,
-  Repository,
-} from 'typeorm';
+import { Between, EntityRepository, Repository } from 'typeorm';
 import { AddBibleTrackDto } from '../dto/AddBibleTrack.dto';
 
 @EntityRepository(BibleTrack)
@@ -24,6 +17,7 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
       ...addBibleTrackDto,
     });
   }
+
   async findOneTrack(trainId: number, trackDate: Date) {
     return await this.findOne({
       where: {
@@ -34,11 +28,11 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
     });
   }
 
-  async findAllTracks(trainId: number) {
+  async findAllTracks(trainId: number, startDate, endDate) {
     const bibleTracks = await this.find({
       where: {
         trainId,
-        // date: Between(startDate, endDate),
+        date: Between(startDate, endDate),
       },
       relations: ['checkStamps'],
       order: {

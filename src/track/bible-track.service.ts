@@ -94,13 +94,13 @@ export class BibleTrackService {
   async getTrackList(
     trainId: number,
     userId: number,
-    // startDate: Date,
-    // endDate: Date,
+    startDate: string,
+    endDate: string,
   ): Promise<any> {
     const list = await this.bibleTrackRepository.findAllTracks(
       trainId,
-      // startDate,
-      // endDate,
+      startDate,
+      endDate,
     );
     return list.map((track) => {
       const userStamp =

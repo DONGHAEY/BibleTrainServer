@@ -27,16 +27,20 @@ export class BibleTrackController {
   constructor(private bibleTrackService: BibleTrackService) {}
 
   /*/ 특정 기차의 트랙들을 반환한다 /*/
-  @Get('/:trainId')
+  @Get('/:trainId/:startDate/:endDate')
   @TrainRoles(RoleFormat.CAPTAIN, RoleFormat.CREW, RoleFormat.VIEWER)
   async showGeneralTrackList(
     @GetUser() user: User,
     @Param('trainId') trainId: number,
-    @Body('startDate') startDate: Date,
-    @Body('endDate') endDate: Date,
+    @Param('startDate') startDate: string,
+    @Param('endDate') endDate: string,
   ): Promise<any> {
-    console.log(startDate, endDate);
-    return await this.bibleTrackService.getTrackList(trainId, user.id);
+    return await this.bibleTrackService.getTrackList(
+      trainId,
+      user.id,
+      startDate,
+      endDate,
+    );
   }
 
   /*/ 특정 기차의 트랙을 추가한다 /*/
