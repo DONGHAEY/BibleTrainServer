@@ -46,6 +46,7 @@ export class BibleTrackService {
     // 비슷한 부분 함수로 처리하기
     await this.checkIsExsisting(trainId, trackDate);
     await this.checkStampRepository.completeTrack(trainId, trackDate, userId);
+    // await this.trainService.updateTrainMember();
   }
 
   async checkIsExsisting(trainId: number, trackDate) {
@@ -67,6 +68,7 @@ export class BibleTrackService {
     // 비슷한 부분 함수로 처리하기
     await this.checkIsExsisting(trainId, trackDate);
     await this.checkStampRepository.delete({ trainId, trackDate, userId });
+    await this.checkStampRepository.getProfileCompleteCount(trainId, userId);
   }
 
   /*/ 특정 트랙의 정보를 반환하는 메서드 /*/

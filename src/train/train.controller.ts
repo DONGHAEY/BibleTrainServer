@@ -3,15 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpException,
-  HttpStatus,
   Param,
-  Patch,
   Post,
   Put,
-  Query,
-  Req,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -117,9 +111,8 @@ export class TrainController {
     @Param('trainId') trainId: number,
     @Param('userId') userId: number,
     @Body('role', TrainMembersValidationPipe) role: RoleFormat,
-  ): Promise<string> {
+  ): Promise<void> {
     await this.trainService.changeProfileRole(userId, trainId, role);
-    return 'success';
   }
 
   /*/ 자신의 기차 프로필 이미지를 변경하기 위한 메서드이다 /*/
@@ -147,9 +140,8 @@ export class TrainController {
   /*/ 기차를 삭제하는 메서드이다 /*/
   @Delete('/:trainId')
   @TrainRoles(RoleFormat.CAPTAIN)
-  async deleteTrain(@Param('trainId') trainId: number): Promise<string> {
+  async deleteTrain(@Param('trainId') trainId: number): Promise<void> {
     await this.trainService.deleteTrain(trainId);
-    return 'success';
   }
 
   /*/ 자신의 기차 프로필을 지우며 기차를 탈퇴하는 메서드이다 /*/
@@ -158,9 +150,8 @@ export class TrainController {
   async deleteMyTrainProfile(
     @GetUser() user: User,
     @Param('trainId') trainId: number,
-  ): Promise<string> {
+  ): Promise<void> {
     await this.trainService.deleteTrainProfile(user.id, trainId);
-    return 'success';
   }
 
   /*/ 기차에 있는 다른 기차 프로필을 삭제하는 메서드이다, 단 이 메서드는 기장만이 사용 할 수 있다 /*/
@@ -169,8 +160,7 @@ export class TrainController {
   async deleteOtherTrainProfile(
     @Param('trainId') trainId: number,
     @Param('userId') userId: number,
-  ): Promise<any> {
+  ): Promise<void> {
     await this.trainService.deleteTrainProfile(userId, trainId);
-    return 'success';
   }
 }

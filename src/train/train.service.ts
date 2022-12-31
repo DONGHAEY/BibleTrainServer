@@ -69,7 +69,9 @@ export class TrainService {
 
   /*/ 내 모든 가입된 기차프로필들 불러오기 메서드 /*/
   async getUserTrainProfiles(userId: number) {
-    return await this.trainProfileRepository.getTrainProfiles(userId);
+    return await this.trainProfileRepository.getTrainProfiles(userId, [
+      'train',
+    ]);
   }
 
   async getTrainJoinKey(trainId: number) {
@@ -94,6 +96,7 @@ export class TrainService {
   async changeProfileRole(userId: number, trainId: number, role: RoleFormat) {
     const isMember: TrainProfile =
       await this.trainProfileRepository.getTrainProfile(userId, trainId);
+    console.log('진입은 됨..');
     await this.trainProfileRepository.update({ userId, trainId }, { role });
   }
 
@@ -121,18 +124,20 @@ export class TrainService {
       where: {
         trainId: trainId,
       },
+      /*/ 체크스템프를 카운트할 때를 위해서 아래 부분이 있는데 */
+      /*/ 또는 참여횟수 컬럼을 만들어서 그곳에 횟수를 업데이트 시키는 방식으로 하기 /*/
       relations: ['checkStamps'],
     });
   }
 
   /*/ 기차테이블에 있는 기차멤버수 컬럼을 업데이트 시키는 메서드 /*/
   async updateMemberCount(trainId: number) {
-    const { profile_count } = await this.trainProfileRepository.getProfileCount(
+    const profileCount = await this.trainProfileRepository.getProfileCount(
       trainId,
     );
     await this.trainRepository.update(
       { id: trainId },
-      { memberCount: profile_count },
+      { memberCount: profileCount },
     );
   }
 
@@ -149,7 +154,7 @@ export class TrainService {
     files: Express.Multer.File[],
   ) {
     const fileName = `${files[0].filename}`;
-    await this.trainProfileRepository.findByIdAndUpdateImg(
+    await this.trainProfileRepository.updateImg(
       userId,
       trainId,
       'userProfiles/' + fileName,
