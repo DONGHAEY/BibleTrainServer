@@ -18,12 +18,10 @@ export class TrainRepository extends Repository<Train> {
         '똑같은 열차 이름이 존재합니다.',
         HttpStatus.BAD_REQUEST,
       );
-      // throw new ConflictException('똑같은 열차 이름이 존재합니다.');
     }
-
     const joinKey = randomBytes(4).toString('hex');
     while (true) {
-      const isSameKey = await this.findOneByJoinKey(joinKey);
+      const isSameKey = await this.findTrainByJoinKey(joinKey);
       if (!isSameKey) {
         break;
       }
@@ -34,12 +32,6 @@ export class TrainRepository extends Repository<Train> {
       captain: userId,
     });
     return train;
-  }
-
-  async updateTrackAmount(trainId: number, trackAmount: number) {
-    await this.query(
-      `update train set track_amount=${trackAmount} where id=${trainId}`,
-    );
   }
 
   async getTrainJoinKey(trainId: number): Promise<string> {
@@ -61,7 +53,6 @@ export class TrainRepository extends Repository<Train> {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return;
   }
 
   async getTrainById(trainId: number): Promise<Train> {
@@ -72,7 +63,7 @@ export class TrainRepository extends Repository<Train> {
     return trainInfo;
   }
 
-  private async findOneByJoinKey(joinKey: string): Promise<Train> {
+  private async findTrainByJoinKey(joinKey: string): Promise<Train> {
     const trainInfo: Train = await this.findOne({
       joinKey,
     });

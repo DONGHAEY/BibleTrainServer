@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TrainModule } from './train/train.module';
 import { User } from './domain/user.entity';
@@ -12,6 +10,7 @@ import { TrackModule } from './track/track.module';
 import { BibleTrack } from './domain/bible-track.entity';
 import { CheckStamp } from './domain/check-stamp.entity';
 import { Token } from './domain/token.entity';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -34,23 +33,10 @@ import { Token } from './domain/token.entity';
       ],
       logging: true,
     }),
-    // RouterModule.forRoutes(routes),
     AuthModule,
     TrainModule,
     TrackModule,
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-
-// @Module({
-//   imports: [
-//     TypeOrmModule.forRootAsync({useFactory : ormConfig}),
-//     CatsModule,
-//     AuthModule,
-//     BibleTrainModule
-//   ],
-//   controllers: [AppController],
-//   providers: [AppService],
-// })
 export class AppModule {}

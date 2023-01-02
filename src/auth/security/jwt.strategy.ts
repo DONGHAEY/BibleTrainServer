@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { User } from 'src/domain/user.entity';
 import { TokenRepository } from '../repository/token.repository';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user.service';
+import { UserService } from 'src/user/user.service';
 import { Token } from 'src/domain/token.entity';
 
 @Injectable()

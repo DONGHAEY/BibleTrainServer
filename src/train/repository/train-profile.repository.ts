@@ -33,14 +33,8 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
   async getTrainProfile(
     userId: number,
     trainId: number,
-    relations: string[] = [],
   ): Promise<TrainProfile> {
-    const Member: TrainProfile = await this.findOne(
-      { userId, trainId },
-      {
-        relations,
-      },
-    );
+    const Member: TrainProfile = await this.findOne({ userId, trainId });
     if (!Member) {
       throw new HttpException(
         '(userId, trainId)를 기본키로 가진 member를 찾을 수 없습니다',
@@ -65,20 +59,6 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
       .groupBy('train_profile.train_id')
       .where(`train_id = ${trainId}`)
       .getRawOne();
-
     return profileCount;
-  }
-
-  async updateImg(userId: number, trainId: number, fileName: string) {
-    const user = await this.getTrainProfile(trainId, userId);
-    user.profileImage = `${fileName}`;
-    const nuser = await this.update(
-      {
-        userId,
-        trainId,
-      },
-      user,
-    );
-    return nuser;
   }
 }

@@ -7,9 +7,9 @@ import { Token } from 'src/domain/token.entity';
 import { User } from 'src/domain/user.entity';
 import { Repository } from 'typeorm';
 import { TokenRepository } from './repository/token.repository';
-import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserDto } from './dto/user.dto';
+import { UserService } from 'src/user/user.service';
 @Injectable()
 export class AuthService {
   constructor(

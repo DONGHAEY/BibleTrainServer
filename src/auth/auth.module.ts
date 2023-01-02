@@ -3,12 +3,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserRepository } from './repository/user.repository';
-import { UserService } from './user.service';
+import { UserRepository } from '../user/repository/user.repository';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './security/jwt.strategy';
 import { AuthGuard } from './security/auth.guard';
 import { TokenRepository } from './repository/token.repository';
+import { UserModule } from 'src/user/user.module';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TokenRepository } from './repository/token.repository';
       secret: 'SECRET_KEY',
     }),
     PassportModule,
+    UserModule,
   ],
   exports: [TypeOrmModule],
   controllers: [AuthController],

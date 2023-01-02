@@ -6,9 +6,10 @@ import { EntityRepository, Repository } from 'typeorm';
 export class CheckStampRepository extends Repository<CheckStamp> {
   async completeTrack(
     trainId: number,
-    trackDate: string,
+    trackDate: Date,
     userId: number,
   ): Promise<any> {
+    // 이미 완료 했는데 다시 완료하는 것을 막는다. //
     await this.checkExistTrack(trainId, trackDate, userId);
     await this.save({
       trackDate,
@@ -19,17 +20,16 @@ export class CheckStampRepository extends Repository<CheckStamp> {
   }
 
   async getProfileCompleteCount(trainId: number, userId: number) {
-    const count = await this.count({
+    return await this.count({
       trainId,
       userId,
       status: STAMPSTAT.COMPLETE,
     });
-    return count;
   }
 
   private async checkExistTrack(
     trainId: number,
-    trackDate: string,
+    trackDate: Date,
     userId: number,
   ) {
     const checkStamp: CheckStamp = await this.findOne({
@@ -38,10 +38,7 @@ export class CheckStampRepository extends Repository<CheckStamp> {
       userId,
     });
     if (checkStamp) {
-      throw new HttpException(
-        '이미 같은 날의 스탬프가 존재합니다',
-        HttpStatus.FOUND,
-      );
+      throw new HttpException('스탬프가 이미 존재합니다', HttpStatus.FOUND);
     }
     return checkStamp;
   }
