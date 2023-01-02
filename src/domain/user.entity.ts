@@ -1,23 +1,33 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import { TrainProfile } from "./train-profile.entity";
-import { UserAuthority } from "./user-authority.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Token } from './token.entity';
+import { TrainProfile } from './train-profile.entity';
 
 @Entity('user')
 export class User {
-    @PrimaryGeneratedColumn()
-    id:number;
-    
-    @Column()
-    username:string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    password:string;
+  @Column()
+  email: string;
 
-    @OneToMany(type=>UserAuthority, userAuthority => userAuthority.user, {eager:true})
-    authorities? : any[];
+  @Column()
+  username: string;
 
-    @OneToMany(type => TrainProfile, trainProfile => trainProfile.user, {
-        cascade:true
-    })
-    myProfiles? : any[];
+  @Column()
+  password: string;
+
+  @OneToMany((type) => TrainProfile, (trainProfile) => trainProfile.user, {
+    cascade: true,
+  })
+  myProfiles?: any[];
+
+  @OneToMany((type) => Token, (token) => token.user)
+  refereshTokens: Token[];
 }

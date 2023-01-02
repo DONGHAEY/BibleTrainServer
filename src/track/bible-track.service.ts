@@ -9,10 +9,8 @@ import { TrainService } from 'src/train/train.service';
 @Injectable()
 export class BibleTrackService {
   constructor(
-    @InjectRepository(TrainRepository) private trainRepository: TrainRepository,
-    @InjectRepository(BibleTrackRepository)
+    private trainRepository: TrainRepository,
     private bibleTrackRepository: BibleTrackRepository,
-    @InjectRepository(CheckStampRepository)
     private checkStampRepository: CheckStampRepository,
     private trainService: TrainService,
   ) {}
@@ -46,7 +44,15 @@ export class BibleTrackService {
     // 비슷한 부분 함수로 처리하기
     await this.checkIsExsisting(trainId, trackDate);
     await this.checkStampRepository.completeTrack(trainId, trackDate, userId);
-    // await this.trainService.updateTrainMember();
+    const count = await this.checkStampRepository.getProfileCompleteCount(
+      trainId,
+      userId,
+    );
+    await this.trainService.updateCompleteCountInProfile(
+      trainId,
+      userId,
+      count,
+    );
   }
 
   async checkIsExsisting(trainId: number, trackDate) {
@@ -68,7 +74,15 @@ export class BibleTrackService {
     // 비슷한 부분 함수로 처리하기
     await this.checkIsExsisting(trainId, trackDate);
     await this.checkStampRepository.delete({ trainId, trackDate, userId });
-    await this.checkStampRepository.getProfileCompleteCount(trainId, userId);
+    const count = await this.checkStampRepository.getProfileCompleteCount(
+      trainId,
+      userId,
+    );
+    await this.trainService.updateCompleteCountInProfile(
+      trainId,
+      userId,
+      count,
+    );
   }
 
   /*/ 특정 트랙의 정보를 반환하는 메서드 /*/

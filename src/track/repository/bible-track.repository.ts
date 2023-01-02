@@ -36,7 +36,7 @@ export class BibleTrackRepository extends Repository<BibleTrack> {
       },
       relations: ['checkStamps'],
       order: {
-        date: 'DESC',
+        date: 'ASC',
       },
     });
     return bibleTracks;

@@ -1,16 +1,8 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleFormat, TrainProfile } from 'src/domain/train-profile.entity';
 import { Train } from 'src/domain/train.entitiy';
-import { User } from 'src/domain/user.entity';
-import { BibleTrackService } from 'src/track/bible-track.service';
 import { BibleTrackRepository } from 'src/track/repository/bible-track.repository';
-import { CheckStampRepository } from 'src/track/repository/check-stamp.repository';
 import { JoinTrainDto } from './dto/JoinTrain.dto';
 import { MakeTrainDto } from './dto/MakeTrain.dto';
 import { TrainProfileRepository } from './repository/train-profile.repository';
@@ -36,6 +28,7 @@ export class TrainService {
       trainName,
       userId,
     );
+    console.log(train);
     const joinTrainDto: JoinTrainDto = {
       nickName: makeTrainDto.captainName,
       joinKey: train.joinKey,
@@ -57,6 +50,7 @@ export class TrainService {
     role: RoleFormat,
   ) {
     await this.trainRepository.checkTrainJoinKey(trainId, joinKey);
+    console.log(userId, trainId, nickName, role);
     const profile = await this.trainProfileRepository.createTrainProfile(
       userId,
       trainId,
@@ -67,11 +61,28 @@ export class TrainService {
     return profile;
   }
 
+  async updateCompleteCountInProfile(
+    trainId: number,
+    userId: number,
+    completeCount: number,
+  ) {
+    await this.trainProfileRepository.update(
+      {
+        trainId,
+        userId,
+      },
+      {
+        completeCount,
+      },
+    );
+  }
+
   /*/ 내 모든 가입된 기차프로필들 불러오기 메서드 /*/
   async getUserTrainProfiles(userId: number) {
-    return await this.trainProfileRepository.getTrainProfiles(userId, [
-      'train',
-    ]);
+    const trainProfiles = await this.trainProfileRepository.getTrainProfiles(
+      userId,
+    );
+    return trainProfiles;
   }
 
   async getTrainJoinKey(trainId: number) {
@@ -80,15 +91,12 @@ export class TrainService {
 
   /*/ 특정 기차프로필정보를 반환하는 메서드 /*/
   async getTrainProfile(userId: number, trainId: number) {
-    const trainProfile = await this.trainProfileRepository.findOne(
-      {
-        userId,
-        trainId,
-      },
-      {
-        relations: ['checkStamps', 'checkStamps.track'], //2중 조인
-      },
-    );
+    const trainProfile = await this.trainProfileRepository.findOne({
+      userId,
+      trainId,
+    });
+    trainProfile.profileImage =
+      'http://172.30.1.19:8000/media/userProfiles/' + trainProfile.profileImage;
     return trainProfile;
   }
 
@@ -96,16 +104,15 @@ export class TrainService {
   async changeProfileRole(userId: number, trainId: number, role: RoleFormat) {
     const isMember: TrainProfile =
       await this.trainProfileRepository.getTrainProfile(userId, trainId);
-    console.log('진입은 됨..');
     await this.trainProfileRepository.update({ userId, trainId }, { role });
   }
 
   /*/ 기차를 탈퇴하는 메서드 /*/
   async deleteTrainProfile(userId: number, trainId: number) {
-    const member: TrainProfile = await this.trainProfileRepository.findOne(
-      { userId, trainId },
-      { relations: ['checkStamps'] },
-    );
+    const member: TrainProfile = await this.trainProfileRepository.findOne({
+      userId,
+      trainId,
+    });
     await this.trainProfileRepository.delete({
       userId: member.userId,
       trainId,
@@ -120,14 +127,18 @@ export class TrainService {
 
   /*/ 특정 기차에 속해 있는 모든 기차프로필들을 반환한다 /*/
   async getTrainMembersProfiles(trainId: number): Promise<TrainProfile[]> {
-    return await this.trainProfileRepository.find({
+    const trainProfiles = await this.trainProfileRepository.find({
       where: {
         trainId: trainId,
       },
-      /*/ 체크스템프를 카운트할 때를 위해서 아래 부분이 있는데 */
-      /*/ 또는 참여횟수 컬럼을 만들어서 그곳에 횟수를 업데이트 시키는 방식으로 하기 /*/
-      relations: ['checkStamps'],
     });
+    await Promise.all(
+      trainProfiles.map((profile) => {
+        profile.profileImage =
+          'http://172.30.1.19:8000/media/userProfiles/' + profile.profileImage;
+      }),
+    );
+    return trainProfiles;
   }
 
   /*/ 기차테이블에 있는 기차멤버수 컬럼을 업데이트 시키는 메서드 /*/
@@ -154,11 +165,7 @@ export class TrainService {
     files: Express.Multer.File[],
   ) {
     const fileName = `${files[0].filename}`;
-    await this.trainProfileRepository.updateImg(
-      userId,
-      trainId,
-      'userProfiles/' + fileName,
-    );
+    await this.trainProfileRepository.updateImg(userId, trainId, fileName);
   }
 
   /*/ 특정 기차를 삭제하는 메서드 /*/

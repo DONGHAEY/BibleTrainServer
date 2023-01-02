@@ -19,7 +19,12 @@ export class CheckStampRepository extends Repository<CheckStamp> {
   }
 
   async getProfileCompleteCount(trainId: number, userId: number) {
-    return await this.count({ trainId, userId, status: STAMPSTAT.COMPLETE });
+    const count = await this.count({
+      trainId,
+      userId,
+      status: STAMPSTAT.COMPLETE,
+    });
+    return count;
   }
 
   private async checkExistTrack(

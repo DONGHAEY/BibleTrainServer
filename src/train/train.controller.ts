@@ -12,7 +12,6 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
 import { GetUser } from 'src/auth/decorator/userinfo.decorator';
 import { AuthGuard } from 'src/auth/security/auth.guard';
 import { User } from 'src/domain/user.entity';
@@ -39,12 +38,14 @@ export class TrainController {
     @Body() trainDto: MakeTrainDto,
     @GetUser() user: User,
   ): Promise<string> {
+    console.log(user);
     const trainInfo: Train = await this.trainService.createTrain(
       `${trainDto.trainName}(${trainDto.churchName})`,
       user.id,
       trainDto,
     );
     return `하나님이 우리에게 주신 성경 or 기도 열차 #${trainInfo.id}`;
+    return 'testing';
   }
 
   /*/기차정보를 불러오는 메서드이다/*/

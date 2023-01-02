@@ -10,7 +10,12 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
     name: string,
     role: RoleFormat,
   ): Promise<TrainProfile> {
-    const isMember: TrainProfile = await this.getTrainProfile(userId, trainId);
+    const isMember: TrainProfile = await this.findOne({
+      where: {
+        userId,
+        trainId,
+      },
+    });
     if (isMember) {
       throw new HttpException(
         '이미 기차에 탑승되어있습니다',
@@ -45,15 +50,12 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
     return Member;
   }
 
-  async getTrainProfiles(
-    userId: number,
-    relations: string[] = [],
-  ): Promise<TrainProfile[]> {
+  async getTrainProfiles(userId: number): Promise<TrainProfile[]> {
     return await this.find({
       where: {
         userId,
       },
-      relations,
+      relations: ['train'],
     });
   }
 
@@ -67,11 +69,9 @@ export class TrainProfileRepository extends Repository<TrainProfile> {
     return profileCount;
   }
 
-  async updateProfileAboutTrackComplete(trainId: number, userId: number) {}
-
   async updateImg(userId: number, trainId: number, fileName: string) {
     const user = await this.getTrainProfile(trainId, userId);
-    user.profileImage = `/media/${fileName}`;
+    user.profileImage = `${fileName}`;
     const nuser = await this.update(
       {
         userId,

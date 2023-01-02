@@ -64,6 +64,7 @@ export class TrainProfile {
     name: 'complete_count',
     type: 'int',
     default: 0,
+    nullable: true,
   })
   completeCount: number;
 
