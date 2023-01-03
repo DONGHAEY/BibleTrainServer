@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { BibleTrack } from 'src/domain/bible-track.entity';
-import { CheckStamp } from 'src/domain/check-stamp.entity';
+import { BibleTrack } from '../entity/bibleTrack.entity';
 import { Between, EntityRepository, Repository } from 'typeorm';
 import { AddBibleTrackDto } from '../dto/AddBibleTrack.dto';
 

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { User } from '../../domain/user.entity';
-import { TrainProfileRepository } from '../repository/train-profile.repository';
+import { User } from 'src/user/entity/user.entity';
+import { TrainProfileRepository } from '../repository/trainProfile.repository';
 
 @Injectable()
 export class TrainRolesGuard implements CanActivate {

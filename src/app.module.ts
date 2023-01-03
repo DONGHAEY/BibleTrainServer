@@ -2,35 +2,31 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { TrainModule } from './train/train.module';
-import { User } from './domain/user.entity';
-import { Train } from './domain/train.entitiy';
-import { TrainProfile } from './domain/train-profile.entity';
-import { Bible } from './domain/bible.entity';
 import { TrackModule } from './track/track.module';
-import { BibleTrack } from './domain/bible-track.entity';
-import { CheckStamp } from './domain/check-stamp.entity';
-import { Token } from './domain/token.entity';
 import { UserModule } from './user/user.module';
+import { User } from './user/entity/user.entity';
+import { Token } from './auth/entity/token.entity';
+import { Train } from './train/entity/train.entity';
+import { BibleTrack } from './track/entity/bibleTrack.entity';
+import { CheckStamp } from './track/entity/checkStamp.entity';
+import { TrainProfile } from './train/entity/trainProfile.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `./env/work.env`,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '127.0.0.1',
+      host: process.env.DB_HOST,
       port: 3306,
-      username: 'root',
-      password: '9310',
-      database: 'bibleTrain3',
-      synchronize: false,
-      entities: [
-        User,
-        Token,
-        Train,
-        TrainProfile,
-        Bible,
-        BibleTrack,
-        CheckStamp,
-      ],
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      synchronize: true,
+      entities: [User, Token, Train, TrainProfile, BibleTrack, CheckStamp],
       logging: true,
     }),
     AuthModule,

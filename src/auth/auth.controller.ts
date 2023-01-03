@@ -15,7 +15,7 @@ import { UserDto } from './dto/user.dto';
 import { AuthGuard } from './security/auth.guard';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { GetUser } from './decorator/userinfo.decorator';
-import { User } from 'src/domain/user.entity';
+import { User } from 'src/user/entity/user.entity';
 
 @Controller('/auth')
 export class AuthController {

@@ -6,7 +6,7 @@ import {
   JoinColumn,
   BaseEntity,
 } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../../user/entity/user.entity';
 @Entity('token')
 export class Token extends BaseEntity {
   @PrimaryColumn({

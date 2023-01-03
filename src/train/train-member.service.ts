@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { RoleFormat, TrainProfile } from 'src/domain/train-profile.entity';
+import { RoleFormat, TrainProfile } from './entity/trainProfile.entity';
 import { JoinTrainDto } from './dto/JoinTrain.dto';
-import { TrainProfileRepository } from './repository/train-profile.repository';
+import { TrainProfileRepository } from './repository/trainProfile.repository';
 import { TrainRepository } from './repository/train.repository';
 import { TrainService } from './train.service';
 

@@ -1,29 +1,18 @@
-import { userInfo } from 'os';
 import {
+  BaseEntity,
   Column,
   Entity,
-  JoinColumn,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BibleTrack } from './bible-track.entity';
-import { TrainProfile } from './train-profile.entity';
-import { User } from './user.entity';
-
-// export enum TrainType {
-//     PRAY = 'PRAY',
-//     BIBLE = 'BIBLE'
-// }
-
-@Entity('train')
-export class Train {
+import { BibleTrack } from '../../track/entity/bibleTrack.entity';
+import { TrainProfile } from './trainProfile.entity';
+@Entity('bible_train')
+export class Train extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', {
+  @Column({
     name: 'train_name',
     unique: true,
     nullable: false,
@@ -47,7 +36,6 @@ export class Train {
     name: 'join_key',
     default: '',
     select: false,
-    // nullable:false,
   })
   joinKey: string;
 

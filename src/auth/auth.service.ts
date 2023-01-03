@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomBytes } from 'crypto';
 import { Response } from 'express';
-import { Token } from 'src/domain/token.entity';
-import { User } from 'src/domain/user.entity';
+import { Token } from './entity/token.entity';
+import { User } from 'src/user/entity/user.entity';
 import { Repository } from 'typeorm';
 import { TokenRepository } from './repository/token.repository';
 import { RegisterUserDto } from './dto/registerUser.dto';
@@ -40,7 +40,7 @@ export class AuthService {
     const token = this.jwtService.sign(
       { ...user },
       {
-        secret: 'SECRET_KEY',
+        secret: process.env.SECRET_KEY,
         algorithm: 'HS256',
         expiresIn: '1h',
       },
@@ -50,7 +50,7 @@ export class AuthService {
         refreshToken: (await this.createToken(user.id)).token,
       },
       {
-        secret: 'SECRET_KEY',
+        secret: process.env.SECRET_KEY,
         algorithm: 'HS256',
         expiresIn: '24h',
       },

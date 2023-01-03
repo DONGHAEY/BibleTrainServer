@@ -1,16 +1,15 @@
 import {
+  BaseEntity,
   Column,
   Entity,
-  JoinColumn,
   OneToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Token } from './token.entity';
-import { TrainProfile } from './train-profile.entity';
+import { Token } from '../../auth/entity/token.entity';
+import { TrainProfile } from '../../train/entity/trainProfile.entity';
 
-@Entity('user')
-export class User {
+@Entity()
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

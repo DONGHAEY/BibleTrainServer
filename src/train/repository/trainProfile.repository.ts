@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Ip } from '@nestjs/common';
-import { RoleFormat, TrainProfile } from 'src/domain/train-profile.entity';
+import { RoleFormat, TrainProfile } from '../entity/trainProfile.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(TrainProfile)

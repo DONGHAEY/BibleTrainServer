@@ -1,12 +1,6 @@
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
-import { TrainProfile } from 'src/domain/train-profile.entity';
-import { Train } from 'src/domain/train.entitiy';
+import { Train } from '../entity/train.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(Train)

@@ -4,7 +4,7 @@ import { FindOneOptions } from 'typeorm';
 import { UserDto } from 'src/auth/dto/user.dto';
 import { UserRepository } from './repository/user.repository';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/domain/user.entity';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
@@ -48,7 +48,6 @@ export class UserService {
       throw new UnauthorizedException('아이디가 잘못되었습니다');
     }
     await this.verifyPassword(userDto.password, userFind.password);
-    console.log('g');
     return userFind;
   }
 }

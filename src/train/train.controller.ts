@@ -14,11 +14,11 @@ import {
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorator/userinfo.decorator';
 import { AuthGuard } from 'src/auth/security/auth.guard';
-import { User } from 'src/domain/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { TrainService } from './train.service';
 import { MakeTrainDto } from './dto/MakeTrain.dto';
-import { RoleFormat, TrainProfile } from 'src/domain/train-profile.entity';
-import { Train } from 'src/domain/train.entitiy';
+import { TrainProfile, RoleFormat } from './entity/trainProfile.entity';
+import { Train } from './entity/train.entity';
 import { TrainRolesGuard } from './guard/train-roles.guard';
 import { TrainRoles } from './decorator/train-role.decorator';
 import { TrainMembersValidationPipe } from './pipes/train-member-validation.pipe';

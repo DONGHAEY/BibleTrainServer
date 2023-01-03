@@ -1,16 +1,16 @@
 import { ROUTES } from '@nestjs/core/router/router-module';
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CheckStamp } from './check-stamp.entity';
-import { Train } from './train.entitiy';
-import { User } from './user.entity';
+import { CheckStamp } from '../../track/entity/checkStamp.entity';
+import { Train } from './train.entity';
+import { User } from '../../user/entity/user.entity';
 
 export enum RoleFormat {
   CAPTAIN = 'ROLE_CAPTAIN',
@@ -19,7 +19,7 @@ export enum RoleFormat {
 }
 
 @Entity('train_profile')
-export class TrainProfile {
+export class TrainProfile extends BaseEntity {
   @PrimaryColumn({
     name: 'user_id',
   })

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Train } from 'src/domain/train.entitiy';
+import { Train } from './entity/train.entity';
 import { TrainRepository } from './repository/train.repository';
 
 @Injectable()

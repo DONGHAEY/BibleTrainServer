@@ -1,9 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { AddBibleTrackDto } from './dto/AddBibleTrack.dto';
 import { CheckStampRepository } from './repository/check-stamp.repository';
 import { BibleTrackRepository } from './repository/bible-track.repository';
-import { TrainRepository } from 'src/train/repository/train.repository';
 import { TrainService } from 'src/train/train.service';
 import { trainMemberService } from 'src/train/train-member.service';
 

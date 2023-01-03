@@ -12,9 +12,9 @@ import { GetUser } from 'src/auth/decorator/userinfo.decorator';
 import { AuthGuard } from 'src/auth/security/auth.guard';
 import { TrainRoles } from 'src/train/decorator/train-role.decorator';
 import { TrainRolesGuard } from 'src/train/guard/train-roles.guard';
-import { RoleFormat } from 'src/domain/train-profile.entity';
-import { User } from 'src/domain/user.entity';
-import { BibleTrackService } from './bible-track.service';
+import { RoleFormat } from 'src/train/entity/trainProfile.entity';
+import { User } from 'src/user/entity/user.entity';
+import { BibleTrackService } from './bibleTrack.service';
 import { AddBibleTrackDto } from './dto/AddBibleTrack.dto';
 
 @Controller('/bible-track')

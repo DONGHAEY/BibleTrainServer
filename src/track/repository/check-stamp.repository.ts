@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { CheckStamp, STAMPSTAT } from 'src/domain/check-stamp.entity';
+import { CheckStamp, STAMPSTAT } from '../entity/checkStamp.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(CheckStamp)

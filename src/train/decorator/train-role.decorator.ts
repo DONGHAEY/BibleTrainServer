@@ -1,6 +1,6 @@
-import { SetMetadata } from "@nestjs/common";
-import { RoleFormat as RoleType } from "../../domain/train-profile.entity";
+import { SetMetadata } from '@nestjs/common';
+import { RoleFormat as RoleType } from '../entity/trainProfile.entity';
 
-export const TrainRoles = (...roles : RoleType[]):any => {
-    return SetMetadata('train-roles', roles);
+export const TrainRoles = (...roles: RoleType[]): any => {
+  return SetMetadata('train-roles', roles);
 };
