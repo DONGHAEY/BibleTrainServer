@@ -1,5 +1,6 @@
 import { ROUTES } from '@nestjs/core/router/router-module';
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   Entity,
@@ -72,4 +73,9 @@ export class TrainProfile extends BaseEntity {
     cascade: true,
   })
   checkStamps: CheckStamp[];
+
+  @AfterLoad()
+  profileImageGlobal() {
+    this.profileImage = 'http://127.0.0.1:8000' + this.profileImage;
+  }
 }

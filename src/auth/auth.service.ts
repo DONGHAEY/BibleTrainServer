@@ -1,11 +1,9 @@
 import { HttpException, HttpStatus, Injectable, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import { randomBytes } from 'crypto';
 import { Response } from 'express';
 import { Token } from './entity/token.entity';
 import { User } from 'src/user/entity/user.entity';
-import { Repository } from 'typeorm';
 import { TokenRepository } from './repository/token.repository';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserDto } from './dto/user.dto';
@@ -52,7 +50,7 @@ export class AuthService {
       {
         secret: process.env.SECRET_KEY,
         algorithm: 'HS256',
-        expiresIn: '24h',
+        expiresIn: '5d',
       },
     );
     res.cookie('token', token, {
@@ -63,7 +61,7 @@ export class AuthService {
     res.cookie('refreshToken', refreshToken, {
       path: '/',
       httpOnly: true,
-      maxAge: 24 * 60 * 1000 * 60 * 1,
+      maxAge: 24 * 60 * 1000 * 60 * 5,
     });
     res.json({
       success: true,

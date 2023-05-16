@@ -56,7 +56,7 @@ export class TrainController {
       joinTrainDto,
       RoleFormat.CAPTAIN,
     );
-    return `하나님이 우리에게 주신 성경 or 기도 열차 #${trainInfo.id}`;
+    return `하나님이 주신 열차 #${trainInfo.id}`;
   }
 
   /*/기차정보를 불러오는 메서드이다/*/

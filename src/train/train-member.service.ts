@@ -98,7 +98,7 @@ export class trainMemberService {
       userId,
       trainId,
     );
-    user.profileImage = `http://172.30.1.19:8000/media/userProfiles/${fileName}`;
+    user.profileImage = `/media/userProfiles/${fileName}`;
     await this.trainProfileRepository.update(
       {
         userId,
